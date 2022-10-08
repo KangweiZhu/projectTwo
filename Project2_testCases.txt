@@ -1,0 +1,140 @@
+a
+p
+pc
+pn
+pd
+pf
+P
+PC
+PN
+PD
+PF
+AA
+r
+RR
+s
+c
+d
+cg
+dg
+ls
+lm
+SS
+CC
+DD
+S
+LS
+
+A John Doe 9/2/2022 BRIDGEWATER
+A John Doe 12/2/2022 BRIDGEWATER
+A John Doe 12/20/2004 BRIDGEWATER
+A John Doe 2/29/2003 BRIDGEWATER
+A John Doe 4/31/2003 BRIDGEWATER
+A John Doe 13/31/2003 BRIDGEWATER
+A John Doe 3/32/2003 BRIDGEWATER
+A John Doe -1/31/2003 BRIDGEWATER
+
+LM
+A John Doe 1/20/2003 BRIDGEWATER
+A john doe 1/20/2003 BRIDGEWATER
+A Jane Doe 6/1/1996 ABC
+
+PC
+PN
+PD
+
+R Paul Siegel 5/1/1999
+P
+R Paul Siegel 5/1/1999
+A Paul Siegel 6/30/1999 FRANKLIN
+PD
+
+AF Jerry Brown 6/30/2005 Edison
+AF Jerry Brown 6/30/2000 BBB 
+AF Jerry Brown 6/30/1979 Edison
+AP Jonnathan Wei 9/21/2009 bridgewater 
+AP Jonnathan Wei 9/21/2000 bridge 
+AP Jonnathan Wei 9/21/1992 bridgewater 
+PN
+
+C cardio Jennifer somerville Roy Brooks 13/8/1977
+C cardio Jennifer somerville Roy Brooks 8/8/1977
+C cardio Mary somerville Roy Brooks 8/8/1977
+C cardio Jennifer somerville Happy Brooks 8/8/1977
+C Pilates Jennifer Bridgewater Mary Lindsey 12/1/1989
+C Pilates Kim Franklin Mary Lindsey 12/1/1989
+C Pilates Kim Franklin Mary Lindsey 12/1/1989
+C Spinning Emma Franklin Mary Lindsey 12/1/1989
+C abc Emma Edison Jane Doe 5/1/1996
+C pilates Emma Morristown Jane Doe 5/1/1996
+C pilates Amy Edison Jane Doe 5/1/1996
+C pilates Emma Edison Jane Doe 13/1/1996
+C Spinning Davis Edison Jane Doe 5/1/1996
+C pilates Emma Edison Jane Doe 5/1/1996
+C Pilates Kim Franklin Paul Siegel 6/30/1999
+C pilates Emma Edison Bill Scanlan 5/1/1999
+S
+
+C pilates Davis piscataway Jerry Brown 6/30/1979
+C pilates Davis piscataway Jerry Brown 6/30/1979
+C pilates Davis piscataway Jonnathan Wei 9/21/1992
+C cardio Davis bridgewater Jonnathan Wei 9/21/1992
+C pilates Jennifer bridgewater Jonnathan Wei 9/21/1992
+C pilates Kim Franklin Jonnathan Wei 9/21/1992
+C SPINNING KIM FRANKLIN Jerry Brown 6/30/1979
+
+S
+D Pilates KIM FRANKLIN Mary Lindsey 12/32/1989
+D abc KIM FRANKLIN Mary Lindsey 12/1/1989
+D pilates Mary FRANKLIN Mary Lindsey 12/1/1989
+D pilates Kim morristown Mary Lindsey 12/1/1989
+D Pilates Jennifer FRANKLIN Mary Lindsey 12/1/1989
+D Pilates KIM FRANKLIN Mary Lindsey 12/1/1989
+D Pilates KIM FRANKLIN Mary Lindsey 12/1/1989
+D spinning Kim Franklin Jerry Brown 6/30/1979
+D spinning Kim Franklin Jerry Brown 6/30/1979
+D pilates Davis piscataway Jonnathan Wei 10/21/1992
+D pilates Davis piscataway Jonnathan Wei 9/21/1992
+D pilates Davis piscataway Jonnathan Wei 9/21/1992
+S
+
+CG spinning Denise bridgewater Jane Doe 5/1/1996
+CG spinning Denise bridgewater Jonnathan Wei 9/21/1992
+CG cardio Davis bridgewater Jonnathan Wei 9/21/1992
+CG CARDIO EMMA EDISON Jonnathan Wei 9/21/1992
+CG cardio Davis bridgewater Jonnathan Wei 9/21/1992
+CG cardio Davis bridgewater Jonnathan Wei 9/21/1992
+DG cardio Davis bridgewater Jonnathan Wei 9/21/1992
+CG cardio Davis bridgewater Jonnathan Wei 9/21/1992
+CG cardio Davis bridgewater Jonnathan Wei 9/21/1992
+
+CG cardio davis bridgewater Jerry Brown 6/30/1979 
+CG pilates davis Edison Jerry Brown 6/30/1979 
+CG pilates davis Edison Jerry Brown 6/30/1979
+DG pilates davis Edison Jerry Brown 6/30/1979
+CG pilates davis Edison Jerry Brown 6/30/1979
+CG pilates davis Edison Jerry Brown 6/30/1979
+S
+
+AF Gary Smith 7/2/1989 bridgewater
+AF Jason Miller 1/28/2003 Franklin
+AP Gary Johnson 4/3/2000 Edison
+AP Jason Lopez 2/28/1998 piscataway
+PN
+PF
+
+
+q
+Q
+This line is garbage to test the Q command.
+
+
+
+
+
+
+
+
+
+
+
