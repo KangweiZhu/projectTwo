@@ -25,6 +25,7 @@ public class GymManager {
     private final int INDEX_OF_DAYTIME = 2;
     private final int INDEX_OF_DOB = 3;
     private final int INDEX_OF_LOCATION = 3;
+    private final int MEMBER_EXPIRE = 3;
     private final int INDEX_OF_EXPIRATION_DATE = 4;
     MemberDatabase memberDB = new MemberDatabase();
     ClassSchedule classSchedule = new ClassSchedule();
@@ -61,7 +62,7 @@ public class GymManager {
                 }
             }
             switch (cmdLine[0]) {
-                case "A" -> A(cmdLine,0);
+                case "A" -> A(cmdLine, 0);
                 case "R" -> R(cmdLine);
                 case "P" -> P();
                 case "PC" -> PC();
@@ -90,21 +91,27 @@ public class GymManager {
      *
      * @param cmdLine Takes in location, dob, full name, and expire date of an individual
      */
-    private void A(String[] cmdLine, int memberType) {
-        String memberLocation = cmdLine[INDEX_OF_LOCATION].toUpperCase();
+    private void A(String[] cmdLine, int addType) {
+        String firstName = cmdLine[INDEX_OF_FIRSTNAME];
+        String lastName = cmdLine[INDEX_OF_LASTNAME];
         Date dob = new Date(cmdLine[INDEX_OF_DOB]);
-        Date expireDate = new Date(cmdLine[INDEX_OF_EXPIRATION_DATE]);
-        if (dob.isValidDob() && expireDate.isValidExpiration() && isValidLocation(memberLocation)) {
-            Member member = new Member(cmdLine[INDEX_OF_FIRSTNAME], cmdLine[INDEX_OF_LASTNAME], dob, expireDate, Location.valueOf(memberLocation));
-            if (memberDB.add(member)) {
-                System.out.println(member.getFname() + " " + member.getLname() + " added.");
-            } else {
-                System.out.println(member.getFname() + " " + member.getLname() + " already in the database.");
-            }
+        String newLocation = cmdLine[INDEX_OF_LOCATION + 1];
+        Location location = null;
+        if (isValidLocation(newLocation)) {
+            location = Location.valueOf(newLocation.toUpperCase());
         }
-        if (memberType == 0){
+        //if addType is 0, then it is command 'A', which add a member-type membership.
+        if (addType == 0) {
+            Date curDate = new Date();
+            if (curDate.nextYear(curDate, MEMBER_EXPIRE) > 0) {
+                Date expireDate = new Date(Integer.toString(curDate.getYear() + 1) + " / "
+                        + Integer.toString(curDate.nextYear(curDate, MEMBER_EXPIRE))
+                        + " / " + Integer.toString(curDate.getDay()));
+                Member newMember = new Member(firstName, lastName, dob, expireDate, location);
+            }
+        } else if (addType == 1) {
 
-        }else{
+        } else if (addType == 2) {
 
         }
     }
@@ -204,11 +211,24 @@ public class GymManager {
     private void LM() {
         String fileName = "memberList.txt";
         String[] lines = readFiles(fileName);
+        System.out.println("-list of members loaded-");
         for (int i = 1; i < lines.length; i++) {
             String cmdLine = lines[i];
             String[] infos = cmdLine.split("\\s");
-            A(infos,1);
+            String firstName = infos[INDEX_OF_FIRSTNAME - 1];
+            String lastName = infos[INDEX_OF_LASTNAME - 1];
+            Date dob = new Date(infos[INDEX_OF_DOB - 1]);
+            Date expireDate = new Date(infos[INDEX_OF_EXPIRATION_DATE - 1]);
+            String location = infos[INDEX_OF_LOCATION + 1];
+            Location newLocation = null;
+            if (isValidLocation(location)) {
+                newLocation = Location.valueOf(location.toUpperCase());
+                Member pastMember = new Member(firstName, lastName, dob, expireDate, newLocation);
+                memberDB.add(pastMember);
+                System.out.println(pastMember.toString());
+            }
         }
+        System.out.println("-end of list-");
     }
 
     private void AF() {

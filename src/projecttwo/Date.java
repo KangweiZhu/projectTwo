@@ -184,6 +184,14 @@ public class Date implements Comparable<Date> {
         }
     }
 
+    public int nextYear(Date date, int addMonth){
+        int curMonth = date.getMonth();
+        if (curMonth + addMonth > MONTHSINYEAR){
+            return curMonth + addMonth - MONTHSINYEAR;
+        }else{
+            return SMALLER;
+        }
+    }
     /**
      * This method checks if a date is valid calendar date.
      * checks if the year is greater or equal than 0 and smaller or equal to currentYear, the month is greater or equal
