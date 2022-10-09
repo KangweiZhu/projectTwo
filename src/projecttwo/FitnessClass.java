@@ -92,7 +92,7 @@ public class FitnessClass {
     /**
      * Check whether a member is checked in this fitness class or not.
      *
-     * @param member A specific Member object that are going to be checked whether has checked in this course or not.
+     * @param member A specific Member object that are going to be checked whether it has checked in this course or not.
      * @return True if it is checked in, otherwise false.
      */
     public boolean isRegistered(Member member) {
