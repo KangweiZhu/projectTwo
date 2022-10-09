@@ -1,7 +1,5 @@
 package projecttwo;
 
-import jdk.swing.interop.SwingInterOpUtils;
-
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.io.File;
@@ -75,7 +73,7 @@ public class GymManager {
                 case "PD" -> PD();
                 case "S" -> S();
                 case "C" -> C(cmdLine);
-                /*case "D" -> D(cmdLine);*/
+                case "D" -> D(cmdLine);
                 case "LS" -> LS();
                 case "LM" -> LM();
                 case "AF" -> A(cmdLine, 1);
@@ -108,8 +106,8 @@ public class GymManager {
             return;
         }
         Date curDate = new Date();
-        Date expireDate = null;
-        Member newMember = null;
+        Date expireDate;
+        Member newMember;
         if (addType == 0 || addType == 1) {
             if (curDate.checkNextYear(MEMBER_AND_FAMILY_EXPIRE) >= 0) {
                 expireDate = new Date(curDate.checkNextYear(MEMBER_AND_FAMILY_EXPIRE) + "/" + curDate.getDay() + "/" +
@@ -127,7 +125,7 @@ public class GymManager {
             expireDate = new Date(curDate.getMonth() + "/" + curDate.getDay() + "/" + curDate.getYear() + 1);
             newMember = new Premium(firstName, lastName, dob, expireDate, location);
         }
-        if (addCheck(newMember)) {
+        if (checkDB(newMember)) {
             memberDB.add(newMember);
             System.out.println(newMember.getFname() + " " + newMember.getLname() + " added.");
         }
@@ -201,7 +199,7 @@ public class GymManager {
             for (int i = 0; i < numOfClasses; i++) {
                 classSchedule.getFitnessClasses()[i].printSchedule();
             }
-            System.out.println();
+            System.out.println("-end of class list.\n");
         }
     }
 
@@ -275,42 +273,36 @@ public class GymManager {
         String newlocation = cmdLine[INDEX_OF_LOCATION];
         Location location;
         Date dob = new Date(cmdLine[INDEX_OF_CHECKIN_DOB]);
-        String instructorName = cmdLine[INDEX_OF_INSTRUCTOR + 1];
-        Member newMember = new Member(fName, lName, dob);
-        if (memberDB.contains(newMember) >= 0){
-            newMember = memberDB.getMember(newMember);
-            if (isValidLocation(newlocation)){
-                location = Location.valueOf(newlocation.toUpperCase());
-            }else{
-                return;
-            }
-        }else{
+        if (!dob.isValidDob()) {
             return;
         }
+        String instructorName = cmdLine[INDEX_OF_INSTRUCTOR + 1];
+        Member newMember = new Member(fName, lName, dob);
+        if (memberDB.contains(newMember) >= 0) {
+            newMember = memberDB.getMember(newMember); // if the database contain this member, then retrieve this member from database. this member could be any type so we need check type
+        } else {
+            System.out.println(fName + " " + lName + " " + dob + " is not in the database.");
+            return;
+        }
+        if (isValidLocation(newlocation)) {
+            location = Location.valueOf(newlocation.toUpperCase());
+        } else {
+            return;
+        }
+        //check if the fitness class is in the array of fitness class
         FitnessClass fitnessClass = new FitnessClass(className, instructorName, null, location);
-        if (dob.isValidDob()) {
-            if (classSchedule.isFitnessClassExist(fitnessClass)) {
-                fitnessClass = classSchedule.getFitnessClass(fitnessClass);
-                if (!fitnessClass.isRegistered(newMember)) {
-                    if (!fitnessClass.isExpired(newMember)) {
-                        if (!isTimeConflict(fitnessClass, newMember)) {
-                            System.out.println(fName + " " + lName + " checked in " + fitnessClass.toString());
-                        } else {
-                            System.out.println("Time conflict - " + fitnessClass.toString());
-                        }
-                    } else {
-                        System.out.println(fName + " " + lName + " " + dob.toString() + " membership expired.");
-                    }
-                } else {
-                    System.out.println(fName + " " + lName + " already checked in.");
-                }
+        if (classSchedule.isFitnessClassExist(fitnessClass)) {
+            fitnessClass = classSchedule.getFitnessClass(fitnessClass);
+            if (fitnessClass == null) {
+                return;
             }
+            doCheckIn(fitnessClass, newMember);
         }
     }
 
-    public boolean addCheck(Member member) {
+    public boolean checkDB(Member member) {
         if (memberDB.contains(member) < 0) {
-            if (member.getDob().isValidDob() && member.getDob().isValidExpiration()) {
+            if (member.getDob().isValidDob() && member.getExpire().isValidExpiration()) {
                 return true;
             }
         } else {
@@ -319,7 +311,7 @@ public class GymManager {
         return false;
     }
 
-    private boolean isTimeConflict(FitnessClass fitnessClass,Member member) {
+    private boolean isTimeConflict(FitnessClass fitnessClass, Member member) {
         String className = fitnessClass.getFitnessClassName();
         int index = 0;
         String[] times = new String[classSchedule.getNumClasses()];
@@ -342,26 +334,58 @@ public class GymManager {
         }
         return false;
     }
+
+    private void doCheckIn(FitnessClass fitnessClass, Member member) {
+        String fName = member.getFname();
+        String lName = member.getLname();
+        if (!fitnessClass.isRegistered(member)) {
+            if (!fitnessClass.isExpired(member)) {
+                if (!isTimeConflict(fitnessClass, member)) {
+                    if (member instanceof Family) {
+                        fitnessClass.addMember(member);
+                        System.out.println(fName + " " + lName + " checked in " + fitnessClass.toString());
+                        fitnessClass.printSchedule();
+                    } else if (member instanceof Member) {
+                        if (fitnessClass.getLocation().compareLocation(member.getLocation()) == 0) {
+                            fitnessClass.addMember(member);
+                            System.out.println(fName + " " + lName + " checked in " + fitnessClass.toString());
+                            fitnessClass.printSchedule();
+                        } else {
+                            System.out.println(fName + " " + lName + " checking in " +
+                                    fitnessClass.getLocation().toString() + " - standard membership location restriction.");
+                        }
+                    }
+                } else {
+                    System.out.println("Time conflict - " + fitnessClass.toString());
+                }
+            } else {
+                System.out.println(fName + " " + lName + " " + member.getDob() + " membership expired.");
+            }
+        } else {
+            System.out.println(fName + " " + lName + " already checked in.");
+        }
+    }
+
     /**
      * The method is used to drop the fitness classes after the member checked in to a class.
      * Will not allow the member to drop the class if the member is not checked in, the date of birth is invalid,
      * or the fitness class does not exist.
-
-     private void D(String[] cmdLine) {
-     String className = cmdLine[INDEX_OF_CLASS_NAME];
-     String fName = cmdLine[INDEX_OF_FIRSTNAME + 1];
-     String lName = cmdLine[INDEX_OF_LASTNAME + 1];
-     Date dob = new Date(cmdLine[INDEX_OF_DOB + 1]);
-     Member member = new Member(fName, lName, dob);
-     for (int i = 0; i < fitnessClasses.length; i++) {
-     if (fitnessClasses[i].getFitnessClassName().equalsIgnoreCase(className)) {
-     fitnessClasses[i].drop(new Member(fName, lName, dob), memberDB);
-     return;
-     }
-     }
-     System.out.println(className + " class does not exist.");
-     }
      */
+    private void D(String[] cmdLine) {
+        String className = cmdLine[INDEX_OF_CLASS_NAME + 1];
+        String fName = cmdLine[INDEX_OF_CHECKIN_FNAME];
+        String lName = cmdLine[INDEX_OF_CHECKIN_LNAME];
+        Date dob = new Date(cmdLine[INDEX_OF_CHECKIN_DOB]);
+        Member member = new Member(fName, lName, dob);
+        for (int i = 0; i < classSchedule.getNumClasses(); i++) {
+            if (classSchedule.getFitnessClasses()[i].getFitnessClassName().equalsIgnoreCase(className)) {
+                classSchedule.getFitnessClasses()[i].drop(new Member(fName, lName, dob), memberDB);
+                return;
+            }
+        }
+        System.out.println(className + " class does not exist.");
+    }
+
 
     /**
      * The method is used to see if a fitness class located at a location.
@@ -378,6 +402,7 @@ public class GymManager {
         System.out.println(loc + ": invalid location!");
         return false;
     }
+
     private String[] readFiles(String fileName) {
         File inputFile = new File(fileName);
         try {

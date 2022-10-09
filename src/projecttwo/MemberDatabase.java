@@ -126,7 +126,7 @@ public class MemberDatabase {
                     System.out.println(curMember.toString() + ", (Premium) guest-pass remaining: " +
                             ((Premium) curMember).getNumOfGuestPass());
                 }else if(mlist[i] instanceof Family){
-                    System.out.println(curMember.toString() + ", (Family) Guess-pass remaining: "
+                    System.out.println(curMember.toString() + ", (Family) Guest-pass remaining: "
                             + ((Family)curMember).getNumOfGuestPass());
                 }
                 System.out.println(mlist[i].toString());
@@ -142,7 +142,7 @@ public class MemberDatabase {
      */
     public void printSchedule() {
         for (int i = 0; i < size; i++) {
-            System.out.print("\t\t");
+            System.out.print("\t");
             System.out.println(mlist[i].toString());
         }
     }

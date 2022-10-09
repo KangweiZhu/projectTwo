@@ -49,7 +49,7 @@ public enum Location {
      * This compareLocation Method compares the Locations of two members.
      * Checks and compares county's and if equal returns difference of their zipcodes
      *
-     * @param member the object to be compared.
+     * @param location the object to be compared.
      * @return a number smaller than 0 if first county smaller than second or equal but firstZipCode smaller than secondZipCode, 0 if two locations are equal, a number greater than 0 if first county greater than second or equal but firstZipCode > secondZipCode
      */
     public int compareLocation(Location location) {

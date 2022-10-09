@@ -13,6 +13,7 @@ public class FitnessClass {
     private Time classTime;
     private final MemberDatabase studentsList = new MemberDatabase();
     private Location location;
+
     /**
      * Construct a FitnessClass object. Default constructor
      */
@@ -77,14 +78,14 @@ public class FitnessClass {
      * this fitness class(if exists).
      */
     public void printSchedule() {
-        System.out.println(fitnessClassName + " - " + instructorName + " " + classTime.getDateTime());
+        System.out.println(this.toString());
         if (studentsList.getSize() != 0) {
-            System.out.println("\t ** participants **");
+            System.out.println("- participants -");
         }
         studentsList.printSchedule();
     }
 
-    public Location getLocation(){
+    public Location getLocation() {
         return location;
     }
 
@@ -108,80 +109,8 @@ public class FitnessClass {
         return member.getExpire().compareTo(new Date()) < 0;
     }
 
-    /**
-     * Check if the course that a member want to check in has time conflict with the other courses that this member
-     * choose.
-     *
-     * @param className      The name of the class that this member want to check in.
-     * @param fitnessClasses The array of FitnessClass object that store all fitnessclasses' information in this project.
-     * @param member         A specific Member object that going to check in.
-     * @return True if there is a time confict, false if there is no time conflict.
-     */
-    public boolean isTimeConflict(String className, FitnessClass[] fitnessClasses, Member member) {
-        int index = 0;
-        String[] times = new String[fitnessClasses.length];
-        String time = " ";
-        for (int i = 0; i < fitnessClasses.length; i++) {
-            if ((fitnessClasses[i].getFitnessClassName()).equalsIgnoreCase(className)) {
-                time = fitnessClasses[i].getTime().getDateTime();
-            }
-        }
-        for (int i = 0; i < fitnessClasses.length; i++) {
-            if ((fitnessClasses[i].getFitnessClassName()).equalsIgnoreCase(className)) {
-                continue;
-            }
-            if (fitnessClasses[i].getStudentsList().contains(member) != NOTFOUND) {
-                if (time.equalsIgnoreCase(fitnessClasses[i].getTime().getDateTime())) {
-                    System.out.println(className + " time conflict -- " +
-                            member.getFname() + " " + member.getLname() + " has already checked in "
-                            + fitnessClasses[i].getFitnessClassName() + ".");
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Check whether a fitness class exist.
-     *
-     * @param className The name of the fitness class that you want check
-     * @return True if the class exist. False if not exist.
-
-    private boolean isClassExist(String className) {
-    for (int i = 0; i < fitnessClasses.length; i++) {
-    if (className.equalsIgnoreCase(fitnessClasses[i].getFitnessClassName())) {
-    return true;
-    }
-    }
-    return false;
-    }
-     */
-
-    /**
-     * Make a Member object check in this fitness class, and print the commandline messages.
-     *
-     * @param member         A specific Member object that need to be check in this class.
-     * @param className      The name of the class that this member wants to check in.
-     * @param fitnessClasses The array of all fitness classes that are available in this project.
-     * @param memberDb       The main member database that stores all the members in all fitness classes.
-     */
-    public void checkIn(Member member, String className, FitnessClass[] fitnessClasses, MemberDatabase memberDb) {
-        className = capitalizeString(className);
-        if (!isExpired(member)) {
-            if (!isRegistered(member)) {
-                if (member.getDob().isValidDob()) {
-                    if (!isTimeConflict(className, fitnessClasses, member)) {
-                        System.out.println(member.getFname() + " " + member.getLname() + " checked in " + className + ".");
-                        studentsList.add(member);
-                    }
-                }
-            } else {
-                System.out.println(member.getFname() + " " + member.getLname() + " has already checked in " + className + ".");
-            }
-        } else {
-            System.out.println(member.getFname() + " " + member.getLname() + " " + member.getDob().toString() + " membership expired.");
-        }
+    public void addMember(Member member) {
+        studentsList.add(member);
     }
 
     /**
@@ -216,17 +145,18 @@ public class FitnessClass {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return fitnessClassName.toUpperCase() + " - " + instructorName.toUpperCase() + ", " + classTime.getDateTime() +
                 ", " + location;
     }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof FitnessClass) {
             FitnessClass fitnessClass = (FitnessClass) obj;
             if (fitnessClass.getLocation().compareLocation(location) == 0 && fitnessClass.getInstructor().
                     equalsIgnoreCase(instructorName) && fitnessClass.getFitnessClassName().
-                    equalsIgnoreCase(fitnessClassName)){
+                    equalsIgnoreCase(fitnessClassName)) {
                 return true;
             }
         }
