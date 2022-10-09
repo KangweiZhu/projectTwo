@@ -113,6 +113,14 @@ public class MemberDatabase {
             System.out.println("Member database is empty!");
         } else {
             for (int i = 0; i < size; i++) {
+                Member curMember = mlist[i];
+                if(curMember instanceof Premium){
+                    System.out.println(curMember.toString() + ", (Premium) guest-pass remaining: " +
+                            ((Premium) curMember).getNumOfGuestPass());
+                }else if(mlist[i] instanceof Family){
+                    System.out.println(curMember.toString() + ", (Family) Guess-pass remaining: "
+                            + ((Family)curMember).getNumOfGuestPass());
+                }
                 System.out.println(mlist[i].toString());
             }
             System.out.println("-end of list-");
@@ -199,4 +207,11 @@ public class MemberDatabase {
         }
     }
 
+    public void printByMembershipFees(){
+        if (size == 0){
+            print();
+        }else{
+
+        }
+    }
 }

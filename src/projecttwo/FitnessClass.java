@@ -10,9 +10,8 @@ public class FitnessClass {
     private final int NOTFOUND = -1;
     private String instructorName;
     private String fitnessClassName;
-    private Time classTime; //sus, need change
-    private final MemberDatabase studentsList = new MemberDatabase(); // sus, need change
-    private MemberDatabase memberDb; // sus, need change
+    private Time classTime;
+    private final MemberDatabase studentsList = new MemberDatabase();
     private Location location;
 
     /**

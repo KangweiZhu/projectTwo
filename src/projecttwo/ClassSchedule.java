@@ -29,4 +29,25 @@ public class ClassSchedule {
         }
         System.out.println("-end of class list.");
     }
+
+    public boolean isFitnessClassExist(FitnessClass checkClass){
+
+        return true;
+    }
+
+    public boolean searchClassInfo(FitnessClass checkClass){
+        String className = checkClass.getFitnessClassName();
+        String instructor = checkClass.getInstructor();
+        boolean nameFlag = false;
+        boolean instructorFlag = false;
+        boolean locationFlag = false;
+        for (int i = 0; i < numClasses; i++) {
+            if (fitnessClasses[i].getFitnessClassName().equalsIgnoreCase(className)){
+                nameFlag = true;
+            }
+            if (fitnessClasses[i].)
+        }
+        //System.out.println(instructor + " - instructor does not exist.");
+        //System.out.println(className + " - class does not exist.");
+    }
 }

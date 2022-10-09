@@ -1,5 +1,7 @@
 package projecttwo;
 
+import jdk.swing.interop.SwingInterOpUtils;
+
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.io.File;
@@ -12,7 +14,6 @@ import java.io.File;
  * @author Kangwei Zhu, Michael Israel
  */
 public class GymManager {
-
     private final int ISNOTFOUND = -1;
     private final int INDEX_OF_COMMAND = 0;
     private final int INDEX_OF_FIRST_CLASS = 0;
@@ -27,6 +28,10 @@ public class GymManager {
     private final int INDEX_OF_LOCATION = 3;
     private final int MEMBER_AND_FAMILY_EXPIRE = 3;
     private final int INDEX_OF_EXPIRATION_DATE = 4;
+    private final int INDEX_OF_CHECKIN_FNAME = 4;
+    private final int INDEX_OF_CHECKIN_LNAME = 5;
+    private final int INDEX_OF_CHECKIN_DOB = 6;
+
     MemberDatabase memberDB = new MemberDatabase();
     ClassSchedule classSchedule = new ClassSchedule();
 
@@ -69,8 +74,8 @@ public class GymManager {
                 case "PN" -> PN();
                 case "PD" -> PD();
                 case "S" -> S();
-                /*case "C" -> C(cmdLine);
-                case "D" -> D(cmdLine);*/
+                case "C" -> C(cmdLine);
+                /*case "D" -> D(cmdLine);*/
                 case "LS" -> LS();
                 case "LM" -> LM();
                 case "AF" -> A(cmdLine, 1);
@@ -99,6 +104,8 @@ public class GymManager {
         Location location = null;
         if (isValidLocation(newLocation)) {
             location = Location.valueOf(newLocation.toUpperCase());
+        } else {
+            return;
         }
         Date curDate = new Date();
         Date expireDate = null;
@@ -107,20 +114,24 @@ public class GymManager {
             if (curDate.checkNextYear(MEMBER_AND_FAMILY_EXPIRE) >= 0) {
                 expireDate = new Date(curDate.checkNextYear(MEMBER_AND_FAMILY_EXPIRE) + "/" + curDate.getDay() + "/" +
                         curDate.getYear() + 1);
-            }else{
+            } else {
                 expireDate = new Date(curDate.getMonth() + MEMBER_AND_FAMILY_EXPIRE + "/" + curDate.getDay() + "/" +
                         curDate.getYear());
             }
-            if (addType == 0){
-                newMember = new Member(firstName,lastName,dob,expireDate,location);
-            }else{
-                newMember = new Family(firstName,lastName,dob,expireDate,location);
+            if (addType == 0) {
+                newMember = new Member(firstName, lastName, dob, expireDate, location);
+            } else {
+                newMember = new Family(firstName, lastName, dob, expireDate, location);
             }
-        }else{
+        } else {
             expireDate = new Date(curDate.getMonth() + "/" + curDate.getDay() + "/" + curDate.getYear() + 1);
-            newMember = new Premium(firstName,lastName,dob,expireDate,location);
+            newMember = new Premium(firstName, lastName, dob, expireDate, location);
         }
-    }//System.out.println(newMember.getFname() + " " + newMember.getLname() + " added.");
+        if (addCheck(newMember)) {
+            memberDB.add(newMember);
+            System.out.println(newMember.getFname() + " " + newMember.getLname() + " added.");
+        }
+    }
 
     /**
      * The method is used when removing a member to the database.
@@ -184,7 +195,7 @@ public class GymManager {
     private void S() {
         int numOfClasses = classSchedule.getNumClasses();
         if (numOfClasses == 0) {
-            System.out.println("Fitness class schedule is empty.");
+            System.out.println("Fitness class schedule is empty.\n");
         } else {
             System.out.println("-Fitness Classes-");
             for (int i = 0; i < numOfClasses; i++) {
@@ -217,7 +228,7 @@ public class GymManager {
     private void LM() {
         String fileName = "memberList.txt";
         String[] lines = readFiles(fileName);
-        System.out.println("-list of members loaded-");
+        System.out.println("\n-list of members loaded-");
         for (int i = 1; i < lines.length; i++) {
             String cmdLine = lines[i];
             String[] infos = cmdLine.split("\\s");
@@ -249,6 +260,27 @@ public class GymManager {
 
     }
 
+    /**
+     * The method is used for members to check in to a fitness class.
+     * Not allowed to be added if -->  the membership has expired, the member does not exist,
+     * the date of birth is invalid, the fitness class does not exist,
+     * there is a time conflict with other fitness classes, or the member has already checked in
+     *
+     * @param cmdLine Takes in class name, dob, and full name of a member
+     */
+    private void C(String[] cmdLine) {
+        String fName = cmdLine[INDEX_OF_CHECKIN_FNAME];
+        String lName = cmdLine[INDEX_OF_CHECKIN_LNAME];
+        String className = cmdLine[INDEX_OF_CLASS_NAME + 1];
+        Date dob = new Date(cmdLine[INDEX_OF_CHECKIN_DOB]);
+        dob.isValidDob();
+        String instructorName = cmdLine[INDEX_OF_INSTRUCTOR + 1];
+        Member newMember = new Member(fName, lName, dob);
+        if (memberDB.contains(newMember) >= 0){
+
+        }
+    }
+
     public boolean addCheck(Member member) {
         if (memberDB.contains(member) < 0) {
             if (member.getDob().isValidDob() && member.getDob().isValidExpiration()) {
@@ -259,39 +291,6 @@ public class GymManager {
         }
         return false;
     }
-    /**
-     * The method is used for members to check in to a fitness class.
-     * Not allowed to be added if -->  the membership has expired, the member does not exist,
-     * the date of birth is invalid, the fitness class does not exist,
-     * there is a time conflict with other fitness classes, or the member has already checked in
-     *
-     * @param cmdLine Takes in class name, dob, and full name of a member
-
-    private void C(String[] cmdLine) {
-    String fName = cmdLine[INDEX_OF_FIRSTNAME + 1];
-    String lName = cmdLine[INDEX_OF_LASTNAME + 1];
-    String className = cmdLine[INDEX_OF_CLASS_NAME];
-    Date dob = new Date(cmdLine[INDEX_OF_DOB + 1]);
-    Member findMember = new Member(fName, lName, dob);
-    if (!findMember.getDob().isValid()){
-    System.out.println("DOB "+ findMember.getDob() + ": invalid calendar date!");
-    return;
-    }
-    if (memberDB.contains(findMember) != ISNOTFOUND) {
-    findMember = memberDB.returnMember(memberDB.contains(findMember));
-    for (int i = 0; i < fitnessClasses.length; i++) {
-    if ((fitnessClasses[i].getFitnessClassName()).equalsIgnoreCase(className)) {
-    fitnessClasses[i].checkIn(findMember, className, fitnessClasses, memberDB);
-    return;
-    }
-    }
-    System.out.println(className + " class does not exist.");
-    } else {
-    System.out.println(fName + " " + lName + " " + dob.toString() + " is not in the database.");
-    }
-    }
-     */
-
 
     /**
      * The method is used to drop the fitness classes after the member checked in to a class.
@@ -329,7 +328,6 @@ public class GymManager {
         System.out.println(loc + ": invalid location!");
         return false;
     }
-
     private String[] readFiles(String fileName) {
         File inputFile = new File(fileName);
         try {

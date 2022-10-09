@@ -7,7 +7,6 @@ public class Premium extends Family{
     public Premium(String firstName, String lastName, Date dob, Date expireDate, Location location){
         super(firstName,lastName,dob,expireDate,location);
         this.numOfGuestPass = 3;
-
     }
 
     @Override
