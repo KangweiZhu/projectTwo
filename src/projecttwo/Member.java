@@ -9,20 +9,19 @@ package projecttwo;
  * @author Michael Israel, Kangwei Zhu
  */
 public class Member implements Comparable<Member> {
-    private final int SMALLER = -1;
-    private final int EQUAL = 0;
-    private final int GREATER = 1;
     private String fname;
     private String lname;
     private Date dob;
     private Date expire;
     private Location location;
+    private double memberShipFee;
 
     /**
      * This is a constructor method for member class that takes any parameters
      * This method should be used when creating a member object without any information of it.
      */
     public Member() {
+        this.memberShipFee = 29.99;
     }
 
     /**
@@ -42,6 +41,7 @@ public class Member implements Comparable<Member> {
         this.dob = dob;
         this.expire = expire;
         this.location = location;
+        this.memberShipFee = 29.99;
     }
 
     /**
@@ -56,6 +56,7 @@ public class Member implements Comparable<Member> {
         this.fname = fname;
         this.lname = lname;
         this.dob = dob;
+        this.memberShipFee = 29.99;
     }
 
     /**
@@ -68,6 +69,7 @@ public class Member implements Comparable<Member> {
     public Member(String fname, String lname) {
         this.fname = fname;
         this.lname = lname;
+        this.memberShipFee = 29.99;
     }
 
     /**
@@ -174,11 +176,10 @@ public class Member implements Comparable<Member> {
                     this.getDob().getYear() == objMember.getDob().getYear();
             return isFNameSame && isLNameSame && isDobSame;
         }
-        int a = "aaa".compareTo("aa");
         return false;
     }
 
-    public double membershipFee(){
+    public double membershipFee() {
         return 39.99;
     }
 
@@ -197,69 +198,11 @@ public class Member implements Comparable<Member> {
         String first = (this.lname + this.fname).toLowerCase();
         String second = (member.lname + member.fname).toLowerCase();
         if (first.compareTo(second) > 0) {
-            return GREATER;
+            return 1;
         } else if (first.compareTo(second) == 0) {
-            return EQUAL;
+            return 0;
         } else {
-            return SMALLER;
+            return -1;
         }
-    }
-
-    /**
-     * The testBed main method for testing Member class's compareTo method.
-     * It will create a testBed object, and use the testMemberCompareTo() to test if the compareTo method will give the
-     * correct output
-     *
-     * @param args arguments that pass to the testbed main. At here should be no arguments.
-     */
-    public static void main(String[] args) {
-        TestBed testBed = new TestBed();
-        int passTestCases = TestBed.INITIALIZECOUNT;//count the value of cases that pass the test,initialize it to zero
-        int expectedValue;
-        int testCaseNumber = TestBed.INITIALIZECOUNT;//record the value of test cases, initialize it to zero.
-        Member testCandidateOne;
-        Member testCandidateTwo;
-
-        //test case 1
-        testCandidateOne = new Member("Mike", "Lee");
-        testCandidateTwo = new Member("Mike", "Lee");
-        expectedValue = TestBed.EQUAL;
-        passTestCases += testBed.testMemberCompareTo(testCandidateOne, testCandidateTwo, testCaseNumber, expectedValue);
-        testCaseNumber++;
-
-        //test case 2
-        testCandidateOne = new Member("Mike", "Lee");
-        testCandidateTwo = new Member("Bike", "Lee");
-        expectedValue = TestBed.GREATER;
-        passTestCases += testBed.testMemberCompareTo(testCandidateOne, testCandidateTwo, testCaseNumber, expectedValue);
-        testCaseNumber++;
-
-        //test case 3
-        testCandidateOne = new Member("Bike", "Lee");
-        testCandidateTwo = new Member("Mike", "Lee");
-        expectedValue = TestBed.SMALLER;
-        passTestCases += testBed.testMemberCompareTo(testCandidateOne, testCandidateTwo, testCaseNumber, expectedValue);
-        testCaseNumber++;
-
-        //test case 4
-        testCandidateOne = new Member("Mike", "Lee");
-        testCandidateTwo = new Member("Mikeee", "Lee");
-        expectedValue = TestBed.SMALLER;
-        passTestCases += testBed.testMemberCompareTo(testCandidateOne, testCandidateTwo, testCaseNumber, expectedValue);
-        testCaseNumber++;
-
-        //test case 5
-        testCandidateOne = new Member("Mikeee", "Lee");
-        testCandidateTwo = new Member("Mike", "Lee");
-        expectedValue = TestBed.GREATER;
-        passTestCases += testBed.testMemberCompareTo(testCandidateOne, testCandidateTwo, testCaseNumber, expectedValue);
-        testCaseNumber++;
-
-        //test case 6
-        testCandidateOne = new Member("MIKE", "LEE");
-        testCandidateTwo = new Member("mike", "lee");
-        expectedValue = TestBed.EQUAL;
-        passTestCases += testBed.testMemberCompareTo(testCandidateOne, testCandidateTwo, testCaseNumber, expectedValue);
-        System.out.println("total test cases: 6, test cases passed: " + (passTestCases - 1));
     }
 }

@@ -57,16 +57,6 @@ public class MemberDatabase {
     }
 
     /**
-     * This method is for getting the Member object in database through using its index in mlist array.
-     *
-     * @param index The index of this Member object in mlist.
-     * @return Member object.
-     */
-    public Member returnMember(int index) {
-        return mlist[index];
-    }
-
-    /**
      * Get the number of Member object that currently stored in this database.
      *
      * @return number of Member object stored in this database.

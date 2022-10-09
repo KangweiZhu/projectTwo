@@ -184,12 +184,11 @@ public class Date implements Comparable<Date> {
         }
     }
 
-    public int nextYear(Date date, int addMonth){
-        int curMonth = date.getMonth();
-        if (curMonth + addMonth > MONTHSINYEAR){
-            return curMonth + addMonth - MONTHSINYEAR;
+    public int checkNextYear(int addMonth){
+        if (this.month + addMonth > MONTHSINYEAR){
+            return this.month + addMonth - MONTHSINYEAR;
         }else{
-            return SMALLER;
+            return -1;
         }
     }
     /**
@@ -228,92 +227,5 @@ public class Date implements Comparable<Date> {
     @Override
     public String toString() {
         return month + "/" + day + "/" + year;
-    }
-
-    /**
-     * The testBed main method for testing Date class's compareTo method.
-     * It will create a testBed object, and use the testDateIsValid() method to test if the isValid method will give
-     * the correct output
-     *
-     * @param args arguments that pass to the testbed main. At here should be no arguments.
-     */
-    public static void main(String[] args) {
-        TestBed testBed = new TestBed();
-        int passTestCases = TestBed.INITIALIZECOUNT;
-        boolean expectedValue;
-        int testCaseNumber = TestBed.INITIALIZECOUNT;
-        Date testBedCandidate;
-
-        //test case 1
-        testBedCandidate = new Date("11/21/800");
-        expectedValue = false;
-        passTestCases += testBed.testDateIsValid(testBedCandidate, testCaseNumber, expectedValue);
-        testCaseNumber++;
-
-        //test case 2
-        testBedCandidate = new Date("2/29/2018");
-        passTestCases += testBed.testDateIsValid(testBedCandidate, testCaseNumber, expectedValue);
-        testCaseNumber++;
-
-        //test case 3
-        testBedCandidate = new Date("13/29/2018");
-        passTestCases += testBed.testDateIsValid(testBedCandidate, testCaseNumber, expectedValue);
-        testCaseNumber++;
-
-        //test case 4
-        testBedCandidate = new Date("3/32/2018");
-        passTestCases += testBed.testDateIsValid(testBedCandidate, testCaseNumber, expectedValue);
-        testCaseNumber++;
-
-        //test case 5
-        testBedCandidate = new Date("4/31/2018");
-        passTestCases += testBed.testDateIsValid(testBedCandidate, testCaseNumber, expectedValue);
-        testCaseNumber++;
-
-        //test case 6
-        testBedCandidate = new Date("2/31/2018");
-        passTestCases += testBed.testDateIsValid(testBedCandidate, testCaseNumber, expectedValue);
-        testCaseNumber++;
-
-        //test case 7
-        testBedCandidate = new Date("3/-27/2018");
-        passTestCases += testBed.testDateIsValid(testBedCandidate, testCaseNumber, expectedValue);
-        testCaseNumber++;
-
-        //test case 8
-        testBedCandidate = new Date("11/21/1905");
-        expectedValue = true;
-        passTestCases += testBed.testDateIsValid(testBedCandidate, testCaseNumber, expectedValue);
-        testCaseNumber++;
-
-        //test case 9
-        testBedCandidate = new Date("2/27/2018");
-        passTestCases += testBed.testDateIsValid(testBedCandidate, testCaseNumber, expectedValue);
-        testCaseNumber++;
-
-        //test case 10
-        testBedCandidate = new Date("1/29/2018");
-        passTestCases += testBed.testDateIsValid(testBedCandidate, testCaseNumber, expectedValue);
-        testCaseNumber++;
-
-        //test case 11
-        testBedCandidate = new Date("3/31/2018");
-        passTestCases += testBed.testDateIsValid(testBedCandidate, testCaseNumber, expectedValue);
-        testCaseNumber++;
-
-        //test case 12
-        testBedCandidate = new Date("4/30/2018");
-        passTestCases += testBed.testDateIsValid(testBedCandidate, testCaseNumber, expectedValue);
-        testCaseNumber++;
-
-        //test case 13
-        testBedCandidate = new Date("2/29/2020");
-        passTestCases += testBed.testDateIsValid(testBedCandidate, testCaseNumber, expectedValue);
-        testCaseNumber++;
-
-        //test case 14
-        testBedCandidate = new Date("3/27/2018");
-        passTestCases += testBed.testDateIsValid(testBedCandidate, testCaseNumber, expectedValue);
-        System.out.println("total test cases: 14, test cases passed: " + (passTestCases - 1));
     }
 }

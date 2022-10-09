@@ -45,7 +45,7 @@ PD
 
 R Paul Siegel 5/1/1999
 P
-R Paul Siegel 5/1/1999if
+R Paul Siegel 5/1/1999
 A Paul Siegel 6/30/1999 FRANKLIN
 PD
 

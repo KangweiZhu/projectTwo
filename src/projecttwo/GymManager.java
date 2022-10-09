@@ -25,7 +25,7 @@ public class GymManager {
     private final int INDEX_OF_DAYTIME = 2;
     private final int INDEX_OF_DOB = 3;
     private final int INDEX_OF_LOCATION = 3;
-    private final int MEMBER_EXPIRE = 3;
+    private final int MEMBER_AND_FAMILY_EXPIRE = 3;
     private final int INDEX_OF_EXPIRATION_DATE = 4;
     MemberDatabase memberDB = new MemberDatabase();
     ClassSchedule classSchedule = new ClassSchedule();
@@ -73,8 +73,8 @@ public class GymManager {
                 case "D" -> D(cmdLine);*/
                 case "LS" -> LS();
                 case "LM" -> LM();
-                case "AF" -> AF();
-                case "AP" -> AP();
+                case "AF" -> A(cmdLine, 1);
+                case "AP" -> A(cmdLine, 2);
                 case "PF" -> PF();
                 case "CG" -> CG();
                 case "DG" -> DG();
@@ -100,21 +100,27 @@ public class GymManager {
         if (isValidLocation(newLocation)) {
             location = Location.valueOf(newLocation.toUpperCase());
         }
-        //if addType is 0, then it is command 'A', which add a member-type membership.
-        if (addType == 0) {
-            Date curDate = new Date();
-            if (curDate.nextYear(curDate, MEMBER_EXPIRE) > 0) {
-                Date expireDate = new Date(Integer.toString(curDate.getYear() + 1) + " / "
-                        + Integer.toString(curDate.nextYear(curDate, MEMBER_EXPIRE))
-                        + " / " + Integer.toString(curDate.getDay()));
-                Member newMember = new Member(firstName, lastName, dob, expireDate, location);
+        Date curDate = new Date();
+        Date expireDate = null;
+        Member newMember = null;
+        if (addType == 0 || addType == 1) {
+            if (curDate.checkNextYear(MEMBER_AND_FAMILY_EXPIRE) >= 0) {
+                expireDate = new Date(curDate.checkNextYear(MEMBER_AND_FAMILY_EXPIRE) + "/" + curDate.getDay() + "/" +
+                        curDate.getYear() + 1);
+            }else{
+                expireDate = new Date(curDate.getMonth() + MEMBER_AND_FAMILY_EXPIRE + "/" + curDate.getDay() + "/" +
+                        curDate.getYear());
             }
-        } else if (addType == 1) {
-
-        } else if (addType == 2) {
-
+            if (addType == 0){
+                newMember = new Member(firstName,lastName,dob,expireDate,location);
+            }else{
+                newMember = new Family(firstName,lastName,dob,expireDate,location);
+            }
+        }else{
+            expireDate = new Date(curDate.getMonth() + "/" + curDate.getDay() + "/" + curDate.getYear() + 1);
+            newMember = new Premium(firstName,lastName,dob,expireDate,location);
         }
-    }
+    }//System.out.println(newMember.getFname() + " " + newMember.getLname() + " added.");
 
     /**
      * The method is used when removing a member to the database.
@@ -231,14 +237,6 @@ public class GymManager {
         System.out.println("-end of list-");
     }
 
-    private void AF() {
-
-    }
-
-    private void AP() {
-
-    }
-
     private void PF() {
 
     }
@@ -249,6 +247,17 @@ public class GymManager {
 
     private void DG() {
 
+    }
+
+    public boolean addCheck(Member member) {
+        if (memberDB.contains(member) < 0) {
+            if (member.getDob().isValidDob() && member.getDob().isValidExpiration()) {
+                return true;
+            }
+        } else {
+            System.out.println(member.getFname() + " " + member.getLname() + " is already in the database.");
+        }
+        return false;
     }
     /**
      * The method is used for members to check in to a fitness class.
