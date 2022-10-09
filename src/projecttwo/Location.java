@@ -52,11 +52,11 @@ public enum Location {
      * @param member the object to be compared.
      * @return a number smaller than 0 if first county smaller than second or equal but firstZipCode smaller than secondZipCode, 0 if two locations are equal, a number greater than 0 if first county greater than second or equal but firstZipCode > secondZipCode
      */
-    public int compareLocation(Member member) {
+    public int compareLocation(Location location) {
         String firstCounty = (this.getCounty()).toLowerCase();
-        String secondCounty = (member.getLocation().getCounty()).toLowerCase();
+        String secondCounty = (location.getCounty()).toLowerCase();
         int firstZipCode = Integer.parseInt(this.getZipCode());
-        int secondZipCode = Integer.parseInt(member.getLocation().getZipCode());
+        int secondZipCode = Integer.parseInt(location.getZipCode());
         if (firstCounty.compareTo(secondCounty) == 0) {
             if (firstZipCode > secondZipCode) {
                 return 1;

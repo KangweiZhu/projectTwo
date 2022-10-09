@@ -272,12 +272,39 @@ public class GymManager {
         String fName = cmdLine[INDEX_OF_CHECKIN_FNAME];
         String lName = cmdLine[INDEX_OF_CHECKIN_LNAME];
         String className = cmdLine[INDEX_OF_CLASS_NAME + 1];
+        String newlocation = cmdLine[INDEX_OF_LOCATION];
+        Location location;
         Date dob = new Date(cmdLine[INDEX_OF_CHECKIN_DOB]);
-        dob.isValidDob();
         String instructorName = cmdLine[INDEX_OF_INSTRUCTOR + 1];
         Member newMember = new Member(fName, lName, dob);
         if (memberDB.contains(newMember) >= 0){
-
+            newMember = memberDB.getMember(newMember);
+            if (isValidLocation(newlocation)){
+                location = Location.valueOf(newlocation.toUpperCase());
+            }else{
+                return;
+            }
+        }else{
+            return;
+        }
+        FitnessClass fitnessClass = new FitnessClass(className, instructorName, null, location);
+        if (dob.isValidDob()) {
+            if (classSchedule.isFitnessClassExist(fitnessClass)) {
+                fitnessClass = classSchedule.getFitnessClass(fitnessClass);
+                if (!fitnessClass.isRegistered(newMember)) {
+                    if (!fitnessClass.isExpired(newMember)) {
+                        if (!isTimeConflict(fitnessClass, newMember)) {
+                            System.out.println(fName + " " + lName + " checked in " + fitnessClass.toString());
+                        } else {
+                            System.out.println("Time conflict - " + fitnessClass.toString());
+                        }
+                    } else {
+                        System.out.println(fName + " " + lName + " " + dob.toString() + " membership expired.");
+                    }
+                } else {
+                    System.out.println(fName + " " + lName + " already checked in.");
+                }
+            }
         }
     }
 
@@ -292,6 +319,29 @@ public class GymManager {
         return false;
     }
 
+    private boolean isTimeConflict(FitnessClass fitnessClass,Member member) {
+        String className = fitnessClass.getFitnessClassName();
+        int index = 0;
+        String[] times = new String[classSchedule.getNumClasses()];
+        String time = " ";
+        FitnessClass[] fitnessClasses = classSchedule.getFitnessClasses();
+        for (int i = 0; i < times.length; i++) {
+            if ((fitnessClasses[i].getFitnessClassName()).equalsIgnoreCase(className)) {
+                time = fitnessClasses[i].getTime().getDateTime();
+            }
+        }
+        for (int i = 0; i < fitnessClasses.length; i++) {
+            if ((fitnessClasses[i].getFitnessClassName()).equalsIgnoreCase(className)) {
+                continue;
+            }
+            if (fitnessClasses[i].getStudentsList().contains(member) != ISNOTFOUND) {
+                if (time.equalsIgnoreCase(fitnessClasses[i].getTime().getDateTime())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     /**
      * The method is used to drop the fitness classes after the member checked in to a class.
      * Will not allow the member to drop the class if the member is not checked in, the date of birth is invalid,

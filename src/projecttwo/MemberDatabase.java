@@ -45,6 +45,14 @@ public class MemberDatabase {
         return find(member);
     }
 
+    public Member getMember(Member member){
+        int index = contains(member);
+        if (index >= 0){
+            return mlist[index];
+        }else{
+            return null;
+        }
+    }
     /**
      * Increase the amount of Member object that the database could store by 4.
      */
@@ -150,7 +158,7 @@ public class MemberDatabase {
             System.out.println("-list of members sorted by county and zipcode-");
             for (int i = 1; i < size; i++) {
                 for (int j = i; j > 0; j--) {
-                    if (mlist[j - 1].getLocation().compareLocation(mlist[j]) > 0) {
+                    if (mlist[j - 1].getLocation().compareLocation(mlist[j].getLocation()) > 0) {
                         Member temp = mlist[j - 1];
                         mlist[j - 1] = mlist[j];
                         mlist[j] = temp;

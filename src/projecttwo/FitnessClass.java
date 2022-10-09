@@ -13,7 +13,6 @@ public class FitnessClass {
     private Time classTime;
     private final MemberDatabase studentsList = new MemberDatabase();
     private Location location;
-
     /**
      * Construct a FitnessClass object. Default constructor
      */
@@ -85,6 +84,10 @@ public class FitnessClass {
         studentsList.printSchedule();
     }
 
+    public Location getLocation(){
+        return location;
+    }
+
     /**
      * Check whether a member is checked in this fitness class or not.
      *
@@ -114,7 +117,7 @@ public class FitnessClass {
      * @param member         A specific Member object that going to check in.
      * @return True if there is a time confict, false if there is no time conflict.
      */
-    private boolean isTimeConflict(String className, FitnessClass[] fitnessClasses, Member member) {
+    public boolean isTimeConflict(String className, FitnessClass[] fitnessClasses, Member member) {
         int index = 0;
         String[] times = new String[fitnessClasses.length];
         String time = " ";
@@ -216,5 +219,17 @@ public class FitnessClass {
     public String toString(){
         return fitnessClassName.toUpperCase() + " - " + instructorName.toUpperCase() + ", " + classTime.getDateTime() +
                 ", " + location;
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof FitnessClass) {
+            FitnessClass fitnessClass = (FitnessClass) obj;
+            if (fitnessClass.getLocation().compareLocation(location) == 0 && fitnessClass.getInstructor().
+                    equalsIgnoreCase(instructorName) && fitnessClass.getFitnessClassName().
+                    equalsIgnoreCase(fitnessClassName)){
+                return true;
+            }
+        }
+        return false;
     }
 }

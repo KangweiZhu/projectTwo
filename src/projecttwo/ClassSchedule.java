@@ -31,13 +31,9 @@ public class ClassSchedule {
     }
 
     public boolean isFitnessClassExist(FitnessClass checkClass){
-
-        return true;
-    }
-
-    public boolean searchClassInfo(FitnessClass checkClass){
         String className = checkClass.getFitnessClassName();
         String instructor = checkClass.getInstructor();
+        Location location = checkClass.getLocation();
         boolean nameFlag = false;
         boolean instructorFlag = false;
         boolean locationFlag = false;
@@ -45,9 +41,33 @@ public class ClassSchedule {
             if (fitnessClasses[i].getFitnessClassName().equalsIgnoreCase(className)){
                 nameFlag = true;
             }
-            if (fitnessClasses[i].)
+            if (fitnessClasses[i].getInstructor().equalsIgnoreCase(instructor)){
+                instructorFlag = true;
+            }
+            if (fitnessClasses[i].getLocation().compareLocation(location) == 0){
+                locationFlag = true;
+            }
         }
-        //System.out.println(instructor + " - instructor does not exist.");
-        //System.out.println(className + " - class does not exist.");
+        if (!nameFlag){
+            System.out.println(className + " - class does not exist.");
+            return false;
+        }else if (!instructorFlag){
+            System.out.println(instructor + " - instructor does not exist.");
+            return false;
+        }else if (!locationFlag){
+            System.out.println(className + " by " + instructor + " does not exist at " + location);
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public FitnessClass getFitnessClass(FitnessClass fitnessClass){
+        for (int i = 0; i < numClasses; i++) {
+            if (fitnessClass.equals(fitnessClasses[i])){
+                return fitnessClasses[i];
+            }
+        }
+        return null;
     }
 }
