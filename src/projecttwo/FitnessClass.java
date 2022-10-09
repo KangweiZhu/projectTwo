@@ -117,15 +117,14 @@ public class FitnessClass {
      * Make a member drop from this fitness class.
      *
      * @param member   A specific Member object that need to drop from this class.
-     * @param memberDb The main member database that stores all the members in all fitness classes.
      */
-    public void drop(Member member, MemberDatabase memberDb) {
+    public void drop(Member member) {
         if (member.getDob().isValidDob()) {
-            if (studentsList.contains(member) != NOTFOUND) {
+            if (studentsList.contains(member) >= 0) {
                 studentsList.remove(member);
-                System.out.println(member.getFname() + " " + member.getLname() + " dropped " + fitnessClassName + ".");
+                System.out.println(member.getFname() + " " + member.getLname() + " done with the class " + fitnessClassName + ".");
             } else {
-                System.out.println(member.getFname() + " " + member.getLname() + " is not a participant in " + fitnessClassName + ".");
+                System.out.println(member.getFname() + " " + member.getLname() + " did not check in " + fitnessClassName + ".");
             }
         }
     }

@@ -72,12 +72,12 @@ public class GymManager {
                 case "PN" -> PN();
                 case "PD" -> PD();
                 case "S" -> S();
-                case "C" -> C(cmdLine);
-                case "D" -> D(cmdLine);
+                case "C" -> CAndD(cmdLine,0);
+                case "D" -> CAndD(cmdLine,1);
                 case "LS" -> LS();
                 case "LM" -> LM();
                 case "AF" -> A(cmdLine, 1);
-                case "AP" -> A(cmdLine, 2);
+                case "AP" -> A(cmdLine, -1);
                 case "PF" -> PF();
                 case "CG" -> CG();
                 case "DG" -> DG();
@@ -266,7 +266,7 @@ public class GymManager {
      *
      * @param cmdLine Takes in class name, dob, and full name of a member
      */
-    private void C(String[] cmdLine) {
+    private void CAndD(String[] cmdLine, int mode) {
         String fName = cmdLine[INDEX_OF_CHECKIN_FNAME];
         String lName = cmdLine[INDEX_OF_CHECKIN_LNAME];
         String className = cmdLine[INDEX_OF_CLASS_NAME + 1];
@@ -296,7 +296,11 @@ public class GymManager {
             if (fitnessClass == null) {
                 return;
             }
-            doCheckIn(fitnessClass, newMember);
+            if(mode == 0) {
+                doCheckIn(fitnessClass, newMember);
+            }else {
+                doDrop(fitnessClass, newMember);
+            }
         }
     }
 
@@ -371,21 +375,13 @@ public class GymManager {
      * Will not allow the member to drop the class if the member is not checked in, the date of birth is invalid,
      * or the fitness class does not exist.
      */
-    private void D(String[] cmdLine) {
-        String className = cmdLine[INDEX_OF_CLASS_NAME + 1];
-        String fName = cmdLine[INDEX_OF_CHECKIN_FNAME];
-        String lName = cmdLine[INDEX_OF_CHECKIN_LNAME];
-        Date dob = new Date(cmdLine[INDEX_OF_CHECKIN_DOB]);
-        Member member = new Member(fName, lName, dob);
-        for (int i = 0; i < classSchedule.getNumClasses(); i++) {
-            if (classSchedule.getFitnessClasses()[i].getFitnessClassName().equalsIgnoreCase(className)) {
-                classSchedule.getFitnessClasses()[i].drop(new Member(fName, lName, dob), memberDB);
-                return;
-            }
-        }
-        System.out.println(className + " class does not exist.");
+    private void doDrop(FitnessClass fitnessClass, Member member) {
+        String fName = member.getFname();
+        String lName = member.getLname();
+        Date dob = member.getDob();
+        String className = fitnessClass.getFitnessClassName();
+        fitnessClass.drop(member);
     }
-
 
     /**
      * The method is used to see if a fitness class located at a location.
