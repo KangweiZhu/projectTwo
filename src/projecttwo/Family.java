@@ -9,7 +9,6 @@ public class Family extends Member {
 
     public Family(String firstName, String lastName, Date dob, Date expirationDate,Location location) {
         super(firstName,lastName,dob,expirationDate,location);
-        memberShipFee = 59.99;
     }
 
     public int getNumOfGuestPass() {
@@ -19,6 +18,6 @@ public class Family extends Member {
 
     @Override
     public double membershipFee() {
-        return this.memberShipFee;
+        return 59.99;
     }
 }

@@ -14,14 +14,12 @@ public class Member implements Comparable<Member> {
     private Date dob;
     private Date expire;
     private Location location;
-    private double memberShipFee;
 
     /**
      * This is a constructor method for member class that takes any parameters
      * This method should be used when creating a member object without any information of it.
      */
     public Member() {
-        this.memberShipFee = 29.99;
     }
 
     /**
@@ -41,7 +39,6 @@ public class Member implements Comparable<Member> {
         this.dob = dob;
         this.expire = expire;
         this.location = location;
-        this.memberShipFee = 29.99;
     }
 
     /**
@@ -56,7 +53,6 @@ public class Member implements Comparable<Member> {
         this.fname = fname;
         this.lname = lname;
         this.dob = dob;
-        this.memberShipFee = 29.99;
     }
 
     /**
@@ -69,7 +65,6 @@ public class Member implements Comparable<Member> {
     public Member(String fname, String lname) {
         this.fname = fname;
         this.lname = lname;
-        this.memberShipFee = 29.99;
     }
 
     /**
