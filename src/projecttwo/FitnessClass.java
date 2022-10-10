@@ -82,7 +82,7 @@ public class FitnessClass {
      */
     public void printSchedule() {
         if (studentsList.getSize() != 0) {
-            System.out.println("- participants -");
+            System.out.println("- Participants -");
             studentsList.printSchedule();
         }
         if (guestList.size() != 0){

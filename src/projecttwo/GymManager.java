@@ -198,7 +198,7 @@ public class GymManager {
         if (numOfClasses == 0) {
             System.out.println("Fitness class schedule is empty.\n");
         } else {
-            System.out.println("-Fitness Classes-");
+            System.out.println("\n-Fitness Classes-");
             for (int i = 0; i < numOfClasses; i++) {
                 classSchedule.getFitnessClasses()[i].printInfo();
             }
@@ -313,7 +313,6 @@ public class GymManager {
         } else {
             return;
         }
-        //check if the fitness class is in the array of fitness class
         FitnessClass fitnessClass = new FitnessClass(className, instructorName, null, location);
         if (classSchedule.isFitnessClassExist(fitnessClass)) {
             fitnessClass = classSchedule.getFitnessClass(fitnessClass);
@@ -365,6 +364,7 @@ public class GymManager {
                         fitnessClass.addMember(member);
                         System.out.println(fName + " " + lName + " checked in " + fitnessClass.toString());
                         fitnessClass.printSchedule();
+                        System.out.println();
                     } else {
                         if (fitnessClass.getLocation().compareLocation(member.getLocation()) == 0) {
                             fitnessClass.addMember(member);
