@@ -122,17 +122,22 @@ public class MemberDatabase {
         } else {
             for (int i = 0; i < size; i++) {
                 Member curMember = mlist[i];
-                if(curMember instanceof Premium){
-                    System.out.println(curMember.toString() + ", (Premium) guest-pass remaining: " +
-                            ((Premium) curMember).getNumOfGuestPass());
-                }else if(mlist[i] instanceof Family){
-                    System.out.println(curMember.toString() + ", (Family) Guest-pass remaining: "
-                            + ((Family)curMember).getNumOfGuestPass());
-                }
-                System.out.println(mlist[i].toString());
+                printByType(curMember);
             }
             System.out.println("-end of list-");
             System.out.println();
+        }
+    }
+
+    public void printByType(Member curMember){
+        if(curMember instanceof Premium){
+            System.out.println(curMember.toString() + ", (Premium) guest-pass remaining: " +
+                    ((Premium) curMember).getNumOfGuestPass());
+        }else if(curMember instanceof Family){
+            System.out.println(curMember.toString() + ", (Family) Guest-pass remaining: "
+                    + ((Family)curMember).getNumOfGuestPass());
+        }else {
+            System.out.println(curMember.toString());
         }
     }
 
@@ -142,8 +147,8 @@ public class MemberDatabase {
      */
     public void printSchedule() {
         for (int i = 0; i < size; i++) {
-            System.out.print("\t");
-            System.out.println(mlist[i].toString());
+            System.out.print("  ");
+            printByType(mlist[i]);
         }
     }
 

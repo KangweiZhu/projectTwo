@@ -16,8 +16,8 @@ public class Family extends Member {
         return numOfGuestPass;
     }
 
-    public void setNumOfGuestPass() {
-        this.numOfGuestPass--;
+    public void setNumOfGuestPass(int num) {
+        this.numOfGuestPass += num;
     }
 
     @Override

@@ -37,7 +37,11 @@ public class ClassSchedule {
         boolean nameFlag = false;
         boolean instructorFlag = false;
         boolean locationFlag = false;
+        boolean findFlag = false;
         for (int i = 0; i < numClasses; i++) {
+            if (fitnessClasses[i].equals(checkClass)){
+                return true;
+            }
             if (fitnessClasses[i].getFitnessClassName().equalsIgnoreCase(className)){
                 nameFlag = true;
             }
@@ -54,11 +58,9 @@ public class ClassSchedule {
         }else if (!instructorFlag){
             System.out.println(instructor + " - instructor does not exist.");
             return false;
-        }else if (!locationFlag){
+        }else{
             System.out.println(className + " by " + instructor + " does not exist at " + location);
             return false;
-        }else{
-            return true;
         }
     }
 

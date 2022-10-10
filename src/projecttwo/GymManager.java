@@ -17,6 +17,10 @@ public class GymManager {
     private final int INDEX_OF_FIRST_CLASS = 0;
     private final int INDEX_OF_CLASS_NAME = 0;
     private final int INDEX_OF_SECOND_CLASS = 1;
+    private final int MODE_C = 0;
+    private final int MODE_D = 1;
+    private final int MODE_CG = 2;
+    private final int MODE_DG = 3;
     private final int INDEX_OF_INSTRUCTOR = 1;
     private final int INDEX_OF_FIRSTNAME = 1;
     private final int INDEX_OF_LASTNAME = 2;
@@ -49,7 +53,6 @@ public class GymManager {
         Scanner sc = new Scanner(System.in);
         String command;
         String[] cmdLine;
-        /*addClasses();*/
         boolean flag = true;
         int countEmptyLine = 1;
         while (flag) {
@@ -72,15 +75,15 @@ public class GymManager {
                 case "PN" -> PN();
                 case "PD" -> PD();
                 case "S" -> S();
-                case "C" -> CAndD(cmdLine,0);
-                case "D" -> CAndD(cmdLine,1);
+                case "C" -> doCAndD(cmdLine, MODE_C);
+                case "D" -> doCAndD(cmdLine, MODE_D);
                 case "LS" -> LS();
                 case "LM" -> LM();
                 case "AF" -> A(cmdLine, 1);
                 case "AP" -> A(cmdLine, -1);
                 case "PF" -> PF();
-                case "CG" -> CG();
-                case "DG" -> DG();
+                case "CG" -> doCAndD(cmdLine,MODE_CG);
+                case "DG" -> doCAndD(cmdLine,MODE_DG);
                 case "Q" -> flag = false;
                 default -> System.out.println(cmdLine[0] + " is an invalid command!");
             }
@@ -197,7 +200,7 @@ public class GymManager {
         } else {
             System.out.println("-Fitness Classes-");
             for (int i = 0; i < numOfClasses; i++) {
-                classSchedule.getFitnessClasses()[i].printSchedule();
+                classSchedule.getFitnessClasses()[i].printInfo();
             }
             System.out.println("-end of class list.\n");
         }
@@ -215,7 +218,8 @@ public class GymManager {
             Time classTime = Time.valueOf(infos[INDEX_OF_DAYTIME].toUpperCase());
             Location classLocation = Location.valueOf(infos[INDEX_OF_LOCATION].toUpperCase());
             if (isValidLocation(location)) {
-                FitnessClass fitnessClass = new FitnessClass(infos[INDEX_OF_CLASS_NAME], infos[INDEX_OF_INSTRUCTOR], classTime, classLocation);
+                FitnessClass fitnessClass = new FitnessClass(infos[INDEX_OF_CLASS_NAME], infos[INDEX_OF_INSTRUCTOR],
+                        classTime, classLocation);
                 fitnessClasses[index++] = fitnessClass;
             }
         }
@@ -250,12 +254,32 @@ public class GymManager {
 
     }
 
-    private void CG() {
-
+    private void doDG(FitnessClass fitnessClass, Member guest) {
+        fitnessClass.dropGuest(guest);
     }
 
-    private void DG() {
-
+    /*CG CARDIO EMMA EDISON Jonnathan Wei 9/21/1992*/
+    private void doCG(FitnessClass fitnessClass, Member member){
+        int numOfPass = 0;
+        if (member instanceof Family){
+            numOfPass = ((Family) member).getNumOfGuestPass();
+            if (numOfPass == 0){
+                System.out.println(member.getFname() + " " + member.getLname() + " ran out of guest pass.");
+            }else{
+                    if (member.getLocation().compareLocation(fitnessClass.getLocation()) == 0){
+                        ((Family) member).setNumOfGuestPass(-1);
+                        fitnessClass.addGuest(member);
+                        System.out.println(member.getFname() + " " + member.getLname() + " (guest) checked in " +
+                                fitnessClass.toString() );
+                        fitnessClass.printSchedule();
+                    }else{
+                        System.out.println(member.getFname() + " " + member.getLname() + " checking in " +
+                                fitnessClass.getLocation().toString() + " - guest location restriction.");
+                    }
+                }
+            }else{
+            System.out.println("Standard membership - guest check-in is not allowed.");
+        }
     }
 
     /**
@@ -266,7 +290,7 @@ public class GymManager {
      *
      * @param cmdLine Takes in class name, dob, and full name of a member
      */
-    private void CAndD(String[] cmdLine, int mode) {
+    private void doCAndD(String[] cmdLine, int mode) {
         String fName = cmdLine[INDEX_OF_CHECKIN_FNAME];
         String lName = cmdLine[INDEX_OF_CHECKIN_LNAME];
         String className = cmdLine[INDEX_OF_CLASS_NAME + 1];
@@ -279,7 +303,7 @@ public class GymManager {
         String instructorName = cmdLine[INDEX_OF_INSTRUCTOR + 1];
         Member newMember = new Member(fName, lName, dob);
         if (memberDB.contains(newMember) >= 0) {
-            newMember = memberDB.getMember(newMember); // if the database contain this member, then retrieve this member from database. this member could be any type so we need check type
+            newMember = memberDB.getMember(newMember);
         } else {
             System.out.println(fName + " " + lName + " " + dob + " is not in the database.");
             return;
@@ -296,15 +320,19 @@ public class GymManager {
             if (fitnessClass == null) {
                 return;
             }
-            if(mode == 0) {
+            if (mode == MODE_C) {
                 doCheckIn(fitnessClass, newMember);
-            }else {
-                doDrop(fitnessClass, newMember);
+            } else if(mode == MODE_D){
+                fitnessClass.drop(newMember);
+            } else if(mode == MODE_DG){
+                doDG(fitnessClass,newMember);
+            } else if(mode == MODE_CG){
+                doCG(fitnessClass,newMember);
             }
         }
     }
 
-    public boolean checkDB(Member member) {
+    private boolean checkDB(Member member) {
         if (memberDB.contains(member) < 0) {
             if (member.getDob().isValidDob() && member.getExpire().isValidExpiration()) {
                 return true;
@@ -316,22 +344,10 @@ public class GymManager {
     }
 
     private boolean isTimeConflict(FitnessClass fitnessClass, Member member) {
-        String className = fitnessClass.getFitnessClassName();
-        int index = 0;
-        String[] times = new String[classSchedule.getNumClasses()];
-        String time = " ";
-        FitnessClass[] fitnessClasses = classSchedule.getFitnessClasses();
-        for (int i = 0; i < times.length; i++) {
-            if ((fitnessClasses[i].getFitnessClassName()).equalsIgnoreCase(className)) {
-                time = fitnessClasses[i].getTime().getDateTime();
-            }
-        }
-        for (int i = 0; i < fitnessClasses.length; i++) {
-            if ((fitnessClasses[i].getFitnessClassName()).equalsIgnoreCase(className)) {
-                continue;
-            }
-            if (fitnessClasses[i].getStudentsList().contains(member) != ISNOTFOUND) {
-                if (time.equalsIgnoreCase(fitnessClasses[i].getTime().getDateTime())) {
+        String classTime = fitnessClass.getTime().getDateTime();
+        for (int i = 0; i < classSchedule.getNumClasses(); i++) {
+            if (classSchedule.getFitnessClasses()[i].isRegistered(member)){
+                if (classTime.equals(classSchedule.getFitnessClasses()[i].getTime().getDateTime())){
                     return true;
                 }
             }
@@ -349,7 +365,7 @@ public class GymManager {
                         fitnessClass.addMember(member);
                         System.out.println(fName + " " + lName + " checked in " + fitnessClass.toString());
                         fitnessClass.printSchedule();
-                    } else if (member instanceof Member) {
+                    } else {
                         if (fitnessClass.getLocation().compareLocation(member.getLocation()) == 0) {
                             fitnessClass.addMember(member);
                             System.out.println(fName + " " + lName + " checked in " + fitnessClass.toString());
@@ -368,19 +384,6 @@ public class GymManager {
         } else {
             System.out.println(fName + " " + lName + " already checked in.");
         }
-    }
-
-    /**
-     * The method is used to drop the fitness classes after the member checked in to a class.
-     * Will not allow the member to drop the class if the member is not checked in, the date of birth is invalid,
-     * or the fitness class does not exist.
-     */
-    private void doDrop(FitnessClass fitnessClass, Member member) {
-        String fName = member.getFname();
-        String lName = member.getLname();
-        Date dob = member.getDob();
-        String className = fitnessClass.getFitnessClassName();
-        fitnessClass.drop(member);
     }
 
     /**

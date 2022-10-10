@@ -1,5 +1,7 @@
 package projecttwo;
 
+import java.util.ArrayList;
+
 /**
  * FitnessClass is the class that defines a fitness class the member can check in. In this project, we just assume there
  * are only.
@@ -12,6 +14,7 @@ public class FitnessClass {
     private String fitnessClassName;
     private Time classTime;
     private final MemberDatabase studentsList = new MemberDatabase();
+    private ArrayList<Member> guestList = new ArrayList<>();
     private Location location;
 
     /**
@@ -78,11 +81,32 @@ public class FitnessClass {
      * this fitness class(if exists).
      */
     public void printSchedule() {
-        System.out.println(this.toString());
         if (studentsList.getSize() != 0) {
             System.out.println("- participants -");
+            studentsList.printSchedule();
         }
-        studentsList.printSchedule();
+        if (guestList.size() != 0){
+            System.out.println("- Guests -");
+            for (int i = 0; i < guestList.size(); i++) {
+                System.out.print("  ");
+                Member curMember = guestList.get(i);
+                if(curMember instanceof Premium){
+                    System.out.println(curMember.toString() + ", (Premium) guest-pass remaining: " +
+                            ((Premium) curMember).getNumOfGuestPass());
+                }else if(curMember instanceof Family){
+                    System.out.println(curMember.toString() + ", (Family) Guest-pass remaining: "
+                            + ((Family)curMember).getNumOfGuestPass());
+                }else {
+                    System.out.println(curMember.toString());
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    public void printInfo(){
+        System.out.println(this.toString());
+        printSchedule();
     }
 
     public Location getLocation() {
@@ -113,22 +137,36 @@ public class FitnessClass {
         studentsList.add(member);
     }
 
+    public void addGuest(Member member) {
+        guestList.add(member);
+    }
+
     /**
      * Make a member drop from this fitness class.
      *
-     * @param member   A specific Member object that need to drop from this class.
+     * @param member A specific Member object that need to drop from this class.
      */
     public void drop(Member member) {
         if (member.getDob().isValidDob()) {
             if (studentsList.contains(member) >= 0) {
                 studentsList.remove(member);
-                System.out.println(member.getFname() + " " + member.getLname() + " done with the class " + fitnessClassName + ".");
+                System.out.println(member.getFname() + " " + member.getLname() + " done with the class "
+                        + fitnessClassName + ".");
             } else {
-                System.out.println(member.getFname() + " " + member.getLname() + " did not check in " + fitnessClassName + ".");
+                System.out.println(member.getFname() + " " + member.getLname() + " did not check in "
+                        + fitnessClassName + ".");
             }
         }
     }
 
+    public void dropGuest(Member member){
+        guestList.remove(member);
+        System.out.println(member.getFname() + " " + member.getLname() + " done with the class " + fitnessClassName
+                + ".");
+        if (member instanceof Family){
+            ((Family) member).setNumOfGuestPass(1);
+        }
+    }
     /**
      * Make the first character of a string be Capitalized
      *
@@ -151,8 +189,7 @@ public class FitnessClass {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof FitnessClass) {
-            FitnessClass fitnessClass = (FitnessClass) obj;
+        if (obj instanceof FitnessClass fitnessClass) {
             if (fitnessClass.getLocation().compareLocation(location) == 0 && fitnessClass.getInstructor().
                     equalsIgnoreCase(instructorName) && fitnessClass.getFitnessClassName().
                     equalsIgnoreCase(fitnessClassName)) {
