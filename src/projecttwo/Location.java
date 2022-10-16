@@ -68,5 +68,4 @@ public enum Location {
         }
         return firstCounty.compareTo(secondCounty);
     }
-
 }

@@ -14,6 +14,9 @@ public class Member implements Comparable<Member> {
     private Date dob;
     private Date expire;
     private Location location;
+    private final double ONE_TIME_FEE = 29.99;
+    private final double MONTHLY_FEE = 39.99;
+    private final int MONTH_NUM = 3;
 
     /**
      * This is a constructor method for member class that takes any parameters
@@ -175,7 +178,7 @@ public class Member implements Comparable<Member> {
     }
 
     public double membershipFee() {
-        return 39.99;
+        return ONE_TIME_FEE + MONTHLY_FEE * MONTH_NUM;
     }
 
     /**

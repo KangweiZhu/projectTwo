@@ -114,7 +114,7 @@ public class GymManager {
         if (addType == 0 || addType == 1) {
             if (curDate.checkNextYear(MEMBER_AND_FAMILY_EXPIRE) >= 0) {
                 expireDate = new Date(curDate.checkNextYear(MEMBER_AND_FAMILY_EXPIRE) + "/" + curDate.getDay() + "/" +
-                        curDate.getYear() + 1);
+                        (curDate.getYear() + 1));
             } else {
                 expireDate = new Date(curDate.getMonth() + MEMBER_AND_FAMILY_EXPIRE + "/" + curDate.getDay() + "/" +
                         curDate.getYear());
@@ -125,7 +125,7 @@ public class GymManager {
                 newMember = new Family(firstName, lastName, dob, expireDate, location);
             }
         } else {
-            expireDate = new Date(curDate.getMonth() + "/" + curDate.getDay() + "/" + curDate.getYear() + 1);
+            expireDate = new Date(curDate.getMonth() + "/" + curDate.getDay() + "/" + (curDate.getYear() + 1));
             newMember = new Premium(firstName, lastName, dob, expireDate, location);
         }
         if (checkDB(newMember)) {
@@ -233,7 +233,7 @@ public class GymManager {
         System.out.println("\n-list of members loaded-");
         for (int i = 1; i < lines.length; i++) {
             String cmdLine = lines[i];
-            String[] infos = cmdLine.split("\\s");
+            String[] infos = cmdLine.split("\\s+");
             String firstName = infos[INDEX_OF_FIRSTNAME - 1];
             String lastName = infos[INDEX_OF_LASTNAME - 1];
             Date dob = new Date(infos[INDEX_OF_DOB - 1]);
@@ -247,18 +247,17 @@ public class GymManager {
                 System.out.println(pastMember.toString());
             }
         }
-        System.out.println("-end of list-");
+        System.out.println("-end of list-\n");
     }
 
     private void PF() {
-
+        memberDB.printByMembershipFees();
     }
 
     private void doDG(FitnessClass fitnessClass, Member guest) {
         fitnessClass.dropGuest(guest);
     }
 
-    /*CG CARDIO EMMA EDISON Jonnathan Wei 9/21/1992*/
     private void doCG(FitnessClass fitnessClass, Member member){
         int numOfPass = 0;
         if (member instanceof Family){
@@ -270,11 +269,15 @@ public class GymManager {
                         ((Family) member).setNumOfGuestPass(-1);
                         fitnessClass.addGuest(member);
                         System.out.println(member.getFname() + " " + member.getLname() + " (guest) checked in " +
-                                fitnessClass.toString() );
+                                fitnessClass.toString());
                         fitnessClass.printSchedule();
+                        System.out.println();
                     }else{
-                        System.out.println(member.getFname() + " " + member.getLname() + " checking in " +
-                                fitnessClass.getLocation().toString() + " - guest location restriction.");
+                        Location location = fitnessClass.getLocation();
+                        String zipCode = location.getZipCode();
+                        String county = location.getCounty();
+                        System.out.println(member.getFname() + " " + member.getLname() + " Guest checking in " +
+                                location + ": " + zipCode + ", " + county + " - guest location restriction.");
                     }
                 }
             }else{
@@ -370,9 +373,13 @@ public class GymManager {
                             fitnessClass.addMember(member);
                             System.out.println(fName + " " + lName + " checked in " + fitnessClass.toString());
                             fitnessClass.printSchedule();
+                            System.out.println();
                         } else {
-                            System.out.println(fName + " " + lName + " checking in " +
-                                    fitnessClass.getLocation().toString() + " - standard membership location restriction.");
+                            Location location = fitnessClass.getLocation();
+                            String zipCode = location.getZipCode();
+                            String county = location.getCounty();
+                            System.out.println(fName + " " + lName + " checking in " + location + ": " + zipCode + ", "
+                                    + county + " - standard membership location restriction.");
                         }
                     }
                 } else {
@@ -416,7 +423,6 @@ public class GymManager {
                 countNumOfLine++;
             }
             String[] lines = new String[countNumOfLine + 1];
-            int index = 1;
             lines[0] = Integer.toString(countNumOfLine);
             sc = new Scanner(inputFile);
             for (int i = 1; i < lines.length; i++) {

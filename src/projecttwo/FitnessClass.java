@@ -85,26 +85,25 @@ public class FitnessClass {
             System.out.println("- Participants -");
             studentsList.printSchedule();
         }
-        if (guestList.size() != 0){
+        if (guestList.size() != 0) {
             System.out.println("- Guests -");
             for (int i = 0; i < guestList.size(); i++) {
                 System.out.print("  ");
                 Member curMember = guestList.get(i);
-                if(curMember instanceof Premium){
+                if (curMember instanceof Premium) {
                     System.out.println(curMember.toString() + ", (Premium) guest-pass remaining: " +
                             ((Premium) curMember).getNumOfGuestPass());
-                }else if(curMember instanceof Family){
+                } else if (curMember instanceof Family) {
                     System.out.println(curMember.toString() + ", (Family) Guest-pass remaining: "
-                            + ((Family)curMember).getNumOfGuestPass());
-                }else {
+                            + ((Family) curMember).getNumOfGuestPass());
+                } else {
                     System.out.println(curMember.toString());
                 }
             }
-            System.out.println();
         }
     }
 
-    public void printInfo(){
+    public void printInfo() {
         System.out.println(this.toString());
         printSchedule();
     }
@@ -133,12 +132,12 @@ public class FitnessClass {
         return member.getExpire().compareTo(new Date()) < 0;
     }
 
-    public void addMember(Member member) {
-        studentsList.add(member);
+    public boolean addMember(Member member) {
+        return studentsList.add(member);
     }
 
-    public void addGuest(Member member) {
-        guestList.add(member);
+    public boolean addGuest(Member member) {
+        return guestList.add(member);
     }
 
     /**
@@ -146,10 +145,11 @@ public class FitnessClass {
      *
      * @param member A specific Member object that need to drop from this class.
      */
-    public void drop(Member member) {
+    public boolean drop(Member member) {
+        boolean flag = false;
         if (member.getDob().isValidDob()) {
             if (studentsList.contains(member) >= 0) {
-                studentsList.remove(member);
+                flag = studentsList.remove(member);
                 System.out.println(member.getFname() + " " + member.getLname() + " done with the class "
                         + fitnessClassName + ".");
             } else {
@@ -157,16 +157,19 @@ public class FitnessClass {
                         + fitnessClassName + ".");
             }
         }
+        return flag;
     }
 
-    public void dropGuest(Member member){
-        guestList.remove(member);
-        System.out.println(member.getFname() + " " + member.getLname() + " done with the class " + fitnessClassName
+    public boolean dropGuest(Member member) {
+        boolean flag = guestList.remove(member);
+        System.out.println(member.getFname() + " " + member.getLname() + " Guest done with the class " + fitnessClassName
                 + ".");
-        if (member instanceof Family){
+        if (member instanceof Family) {
             ((Family) member).setNumOfGuestPass(1);
         }
+        return flag;
     }
+
     /**
      * Make the first character of a string be Capitalized
      *

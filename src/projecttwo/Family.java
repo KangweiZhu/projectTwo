@@ -2,7 +2,9 @@ package projecttwo;
 
 public class Family extends Member {
     protected int numOfGuestPass;
-
+    private final double ONE_TIME_FEE = 29.99;
+    private final double MONTHLY_FEE = 59.99;
+    private final int MONTH_NUM = 3;
     public Family() {
         numOfGuestPass = 1;
     }
@@ -22,7 +24,7 @@ public class Family extends Member {
 
     @Override
     public double membershipFee() {
-        return 59.99;
+        return ONE_TIME_FEE + MONTHLY_FEE * MONTH_NUM;
     }
 
     //not sure if we are allowed to use getClass() method here. obviously getClass() is better than instanceof since it reduces the nums of duplicate codes.

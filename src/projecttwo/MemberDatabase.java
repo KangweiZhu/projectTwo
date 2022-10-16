@@ -123,6 +123,7 @@ public class MemberDatabase {
             for (int i = 0; i < size; i++) {
                 Member curMember = mlist[i];
                 printByType(curMember);
+                System.out.println();
             }
             System.out.println("-end of list-");
             System.out.println();
@@ -131,13 +132,13 @@ public class MemberDatabase {
 
     public void printByType(Member curMember){
         if(curMember instanceof Premium){
-            System.out.println(curMember.toString() + ", (Premium) guest-pass remaining: " +
+            System.out.print(curMember.toString() + ", (Premium) guest-pass remaining: " +
                     ((Premium) curMember).getNumOfGuestPass());
         }else if(curMember instanceof Family){
-            System.out.println(curMember.toString() + ", (Family) Guest-pass remaining: "
+            System.out.print(curMember.toString() + ", (Family) Guest-pass remaining: "
                     + ((Family)curMember).getNumOfGuestPass());
         }else {
-            System.out.println(curMember.toString());
+            System.out.print(curMember.toString());
         }
     }
 
@@ -149,6 +150,7 @@ public class MemberDatabase {
         for (int i = 0; i < size; i++) {
             System.out.print("  ");
             printByType(mlist[i]);
+            System.out.println();
         }
     }
 
@@ -224,7 +226,13 @@ public class MemberDatabase {
         if (size == 0){
             print();
         }else{
-
+            System.out.println("-list of members with membership fees-");
+            for (int i = 0; i < size; i++) {
+                Member currMember = mlist[i];
+                printByType(currMember);
+                System.out.println(", Membership fee: $"+ currMember.membershipFee());
+            }
+            System.out.println();
         }
     }
 }

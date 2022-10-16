@@ -1,6 +1,8 @@
 package projecttwo;
 
 public class Premium extends Family{
+    private final double MONTHLY_FEE = 59.99;
+    private final double MONTH_NUM = 11;
     public Premium(){
         this.numOfGuestPass = 3;
     }
@@ -11,6 +13,6 @@ public class Premium extends Family{
 
     @Override
     public double membershipFee() {
-        return 59.99;
+        return MONTHLY_FEE * MONTH_NUM;
     }
 }
