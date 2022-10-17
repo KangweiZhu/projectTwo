@@ -434,7 +434,7 @@ public class GymManager {
                     }
                 } else {
                     System.out.println("Time conflict - " + fitnessClass.toString() + ", " + zipCode + ", "
-                    + county);
+                            + county);
                 }
             } else {
                 System.out.println(fName + " " + lName + " " + member.getDob() + " membership expired.");

@@ -5,6 +5,11 @@ import projecttwo.*;
 
 import static org.junit.Assert.*;
 
+/**
+ * This class is for Junit test: check in/drop members, check in / drop guests in fitnessClass
+ *
+ * @author Kangwei Zhu, Michael Israel
+ */
 public class FitnessClassTest {
     private final Member Kangwei = new Member("Kangwei", "Zhu", new Date("01/01/2002"),
             new Date("12/31/2022"), Location.EDISON);
@@ -16,6 +21,14 @@ public class FitnessClassTest {
     private final FitnessClass sampleFitnessClass_cs213 = new FitnessClass("cs213", "Chang",
             Time.AFTERNOON, Location.PISCATAWAY);
     GymManager sampleGymManager = new GymManager();
+
+    /**
+     * Default constructor
+     */
+    public FitnessClassTest() {
+
+    }
+
     /**
      * Test case 1: Check if a Member type member could be checked in
      */
@@ -147,42 +160,42 @@ public class FitnessClassTest {
      * be able to check in any other class at 9:30 since there is time conflict
      */
     @Test
-    public void test_time_conflict(){
+    public void test_time_conflict() {
         FitnessClass nineThirtyClassOne = new FitnessClass("PILATES", "JENNIFER",
                 Time.MORNING, Location.BRIDGEWATER);
         FitnessClass nineThirtyClassTwo = new FitnessClass("PILATES", "DAVIS",
                 Time.MORNING, Location.PISCATAWAY);
-        sampleGymManager.testCheckIn(nineThirtyClassOne,Chang);
+        sampleGymManager.testCheckIn(nineThirtyClassOne, Chang);
         FitnessClass[] sampleSchedule = {nineThirtyClassOne, nineThirtyClassTwo};
-        sampleGymManager.addSampleClassSchedule(sampleSchedule,2);
-        assertFalse(sampleGymManager.testCheckIn(nineThirtyClassTwo,Chang));
+        sampleGymManager.addSampleClassSchedule(sampleSchedule, 2);
+        assertFalse(sampleGymManager.testCheckIn(nineThirtyClassTwo, Chang));
     }
 
     /**
      * Test case 16: A member with invalid expirationDate will not be checkin into any class
      */
     @Test
-    public void test_invalid_expireDate_checkin(){
-        Member member = new Member("abc","cba",new Date("2/2/2000"),new Date("2/31/-11"),Location.EDISON);
-        assertFalse(sampleGymManager.testCheckIn(sampleFitnessClass_cs213,member));
+    public void test_invalid_expireDate_checkin() {
+        Member member = new Member("abc", "cba", new Date("2/2/2000"), new Date("2/31/-11"), Location.EDISON);
+        assertFalse(sampleGymManager.testCheckIn(sampleFitnessClass_cs213, member));
     }
 
     /**
      * Test case 17: A member with invalid expirationDate will not be checkin into any class
      */
     @Test
-    public void test_invalid_DOB_checkin(){
-        Member member = new Member("abc","cba",new Date("2/2/0"),new Date("2/31/2022"),Location.EDISON);
-        assertFalse(sampleGymManager.testCheckIn(sampleFitnessClass_cs213,member));
+    public void test_invalid_DOB_checkin() {
+        Member member = new Member("abc", "cba", new Date("2/2/0"), new Date("2/31/2022"), Location.EDISON);
+        assertFalse(sampleGymManager.testCheckIn(sampleFitnessClass_cs213, member));
     }
 
     /**
      * Test case 18: A member cannot have guest for checking in.
      */
     @Test
-    public void test_invalid_memberShip_checkin(){
-        Member member = new Member("abc","cba",new Date("2/2/0"),new Date("2/31/2022"),Location.EDISON);
-        assertFalse(sampleGymManager.testGuestCheckIn(sampleFitnessClass_cs213,member));
+    public void test_invalid_memberShip_checkin() {
+        Member member = new Member("abc", "cba", new Date("2/2/0"), new Date("2/31/2022"), Location.EDISON);
+        assertFalse(sampleGymManager.testGuestCheckIn(sampleFitnessClass_cs213, member));
     }
 
     /**
@@ -190,41 +203,41 @@ public class FitnessClassTest {
      * location.
      */
     @Test
-    public void test_invalid_Location_checkin(){
-        Member member = new Family("abc","cba",new Date("2/2/2001"),new Date("2/31/2999"),Location.EDISON);
-        assertFalse(sampleGymManager.testGuestCheckIn(sampleFitnessClass_cs213,member));
+    public void test_invalid_Location_checkin() {
+        Member member = new Family("abc", "cba", new Date("2/2/2001"), new Date("2/31/2999"), Location.EDISON);
+        assertFalse(sampleGymManager.testGuestCheckIn(sampleFitnessClass_cs213, member));
     }
 
     /**
      * Test case 20: A Family membership could only have one guest for checkin
      */
     @Test
-    public void test_more_than_one_guest_Family_checkin(){
-        Member member = new Family("abc","cba",new Date("2/2/2001"),new Date("2/31/2999"),Location.PISCATAWAY);
-        sampleGymManager.testCheckIn(sampleFitnessClass_cs213,member);
-        sampleGymManager.testGuestCheckIn(sampleFitnessClass_cs213,member);
-        assertFalse(sampleGymManager.testGuestCheckIn(sampleFitnessClass_cs213,member));
+    public void test_more_than_one_guest_Family_checkin() {
+        Member member = new Family("abc", "cba", new Date("2/2/2001"), new Date("2/31/2999"), Location.PISCATAWAY);
+        sampleGymManager.testCheckIn(sampleFitnessClass_cs213, member);
+        sampleGymManager.testGuestCheckIn(sampleFitnessClass_cs213, member);
+        assertFalse(sampleGymManager.testGuestCheckIn(sampleFitnessClass_cs213, member));
     }
 
     /**
      * Test case 20: A Premium membership could only have Three guest for checkin
      */
     @Test
-    public void test_more_than_one_guest_Premium_checkin(){
-        Member member = new Premium("abc","cba",new Date("2/2/2001"),new Date("2/31/2999"),Location.PISCATAWAY);
-        sampleGymManager.testCheckIn(sampleFitnessClass_cs213,member);
-        sampleGymManager.testGuestCheckIn(sampleFitnessClass_cs213,member);
-        sampleGymManager.testGuestCheckIn(sampleFitnessClass_cs213,member);
-        sampleGymManager.testGuestCheckIn(sampleFitnessClass_cs213,member);
-        assertFalse(sampleGymManager.testGuestCheckIn(sampleFitnessClass_cs213,member));
+    public void test_more_than_one_guest_Premium_checkin() {
+        Member member = new Premium("abc", "cba", new Date("2/2/2001"), new Date("2/31/2999"), Location.PISCATAWAY);
+        sampleGymManager.testCheckIn(sampleFitnessClass_cs213, member);
+        sampleGymManager.testGuestCheckIn(sampleFitnessClass_cs213, member);
+        sampleGymManager.testGuestCheckIn(sampleFitnessClass_cs213, member);
+        sampleGymManager.testGuestCheckIn(sampleFitnessClass_cs213, member);
+        assertFalse(sampleGymManager.testGuestCheckIn(sampleFitnessClass_cs213, member));
     }
 
     /**
      * Test case 21: A premium membership's guest could only check in at membership location
      */
     @Test
-    public void test_Premium_Location_checkin(){
-        Premium member = new Premium("abc","cba",new Date("2/2/2001"),new Date("2/31/2999"),Location.EDISON);
-        assertFalse(sampleGymManager.testGuestCheckIn(sampleFitnessClass_cs213,member));
+    public void test_Premium_Location_checkin() {
+        Premium member = new Premium("abc", "cba", new Date("2/2/2001"), new Date("2/31/2999"), Location.EDISON);
+        assertFalse(sampleGymManager.testGuestCheckIn(sampleFitnessClass_cs213, member));
     }
 }

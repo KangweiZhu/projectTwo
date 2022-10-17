@@ -17,6 +17,7 @@ public enum Location {
 
     /**
      * get the zipcode of one Location object
+     *
      * @return The zipcode of one Location object
      */
     public String getZipCode() {
@@ -25,6 +26,7 @@ public enum Location {
 
     /**
      * get the county name of one Location object
+     *
      * @return The county name of one Location object
      */
     public String getCounty() {

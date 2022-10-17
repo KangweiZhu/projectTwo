@@ -4,7 +4,7 @@ package projecttwo;
  * ClassSchedule is the class that serve the function of storing all the fitnesses classes that this fitness chain has.
  * In this project all the FitnessClasses is stored in an array
  *
- * @author: Michael Israel, Kangwei Zhu
+ * @author Michael Israel, Kangwei Zhu
  */
 public class ClassSchedule {
     private FitnessClass[] fitnessClasses;
