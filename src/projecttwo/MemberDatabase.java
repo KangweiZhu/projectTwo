@@ -45,14 +45,21 @@ public class MemberDatabase {
         return find(member);
     }
 
-    public Member getMember(Member member){
+    /**
+     * This method is used when retrieving a member from the database
+     *
+     * @param member The member that we want to retrieve.
+     * @return null if not found, otherwise the Member Object.
+     */
+    public Member getMember(Member member) {
         int index = contains(member);
-        if (index >= 0){
+        if (index >= 0) {
             return mlist[index];
-        }else{
+        } else {
             return null;
         }
     }
+
     /**
      * Increase the amount of Member object that the database could store by 4.
      */
@@ -130,14 +137,20 @@ public class MemberDatabase {
         }
     }
 
-    public void printByType(Member curMember){
-        if(curMember instanceof Premium){
+    /**
+     * This method is used when displaying/printing the member by its membership Types.
+     * This is because for Premium membership and Family membership, we need to print their number of guest pass.
+     *
+     * @param curMember The input member that are going to be displayed.
+     */
+    public void printByType(Member curMember) {
+        if (curMember instanceof Premium) {
             System.out.print(curMember.toString() + ", (Premium) guest-pass remaining: " +
                     ((Premium) curMember).getNumOfGuestPass());
-        }else if(curMember instanceof Family){
+        } else if (curMember instanceof Family) {
             System.out.print(curMember.toString() + ", (Family) Guest-pass remaining: "
-                    + ((Family)curMember).getNumOfGuestPass());
-        }else {
+                    + ((Family) curMember).getNumOfGuestPass());
+        } else {
             System.out.print(curMember.toString());
         }
     }
@@ -222,15 +235,18 @@ public class MemberDatabase {
         }
     }
 
-    public void printByMembershipFees(){
-        if (size == 0){
+    /**
+     * Print the current list with the membership Fees. (for next billing statement and regardless the expiration date)
+     */
+    public void printByMembershipFees() {
+        if (size == 0) {
             print();
-        }else{
+        } else {
             System.out.println("-list of members with membership fees-");
             for (int i = 0; i < size; i++) {
                 Member currMember = mlist[i];
                 printByType(currMember);
-                System.out.println(", Membership fee: $"+ currMember.membershipFee());
+                System.out.println(", Membership fee: $" + currMember.membershipFee());
             }
             System.out.println();
         }

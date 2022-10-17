@@ -1,7 +1,9 @@
 package projecttwo;
 
 /**
- * The Member class is for the creation and data manipulation of Member object.
+ * The Member class is for the creation and data manipulation of Member object. It is the root of the membership hierarchy
+ * In this project, the Member class is the super class of Family class and Premium class.
+ * <p>
  * A Member object could be viewed as a real person in the world. He should have first name, last name, date of birth.
  * And if this person is registered to a fitness class, he also should have expiration date and the location of the
  * fitness class he takes.
@@ -98,15 +100,6 @@ public class Member implements Comparable<Member> {
     }
 
     /**
-     * This method is used when setting the date of birth of a Member object.
-     *
-     * @param dob Date of birth of a Member object.
-     */
-    public void setDob(Date dob) {
-        this.dob = dob;
-    }
-
-    /**
      * This method is used when getting the expiration date of a Member object.
      *
      * @return The Date type expiration date.
@@ -116,30 +109,12 @@ public class Member implements Comparable<Member> {
     }
 
     /**
-     * This method is used when setting the expiration date of a Member object.
-     *
-     * @param expire The expiration date.
-     */
-    public void setExpire(Date expire) {
-        this.expire = expire;
-    }
-
-    /**
      * This method is used when getting the fitness class location of a Member object.
      *
      * @return The location of this Member object
      */
     public Location getLocation() {
         return location;
-    }
-
-    /**
-     * This method is used when setting the fitness class location of a Member object
-     *
-     * @param location The location of this Member object
-     */
-    public void setLocation(Location location) {
-        this.location = location;
     }
 
     /**
@@ -177,6 +152,11 @@ public class Member implements Comparable<Member> {
         return false;
     }
 
+    /**
+     * This method is used when getting the membership Fee of member Type membership
+     *
+     * @return The membership fee.
+     */
     public double membershipFee() {
         return ONE_TIME_FEE + MONTHLY_FEE * MONTH_NUM;
     }

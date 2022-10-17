@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
  * Date object holds information such as year, month, and day.
  * Can also be created as the mm/dd/yyyy of the current day (i.e. today)
  *
- * @author Kangwei Zhu, Michael Israel
+ * @author Michael Israel, Kangwei Zhu
  */
 public class Date implements Comparable<Date> {
     private int year;
@@ -184,13 +184,20 @@ public class Date implements Comparable<Date> {
         }
     }
 
-    public int checkNextYear(int addMonth){
-        if (this.month + addMonth > MONTHSINYEAR){
+    /**
+     * Check whether the year comes to next year if the date is increased by several month.
+     *
+     * @param addMonth The number of month that added to the Date object
+     * @return the month in next year if it exceed the month limit of current year. otherwise -1
+     */
+    public int checkNextYear(int addMonth) {
+        if (this.month + addMonth > MONTHSINYEAR) {
             return this.month + addMonth - MONTHSINYEAR;
-        }else{
+        } else {
             return -1;
         }
     }
+
     /**
      * This method checks if a date is valid calendar date.
      * checks if the year is greater or equal than 0 and smaller or equal to currentYear, the month is greater or equal

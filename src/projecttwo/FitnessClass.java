@@ -3,8 +3,7 @@ package projecttwo;
 import java.util.ArrayList;
 
 /**
- * FitnessClass is the class that defines a fitness class the member can check in. In this project, we just assume there
- * are only.
+ * FitnessClass is the class that defines a fitness class the member can check in.
  *
  * @author Michael Israel, Kangwei Zhu
  */
@@ -18,25 +17,24 @@ public class FitnessClass {
     private Location location;
 
     /**
-     * Construct a FitnessClass object. Default constructor
+     * Construct a FitnessClass object. Default constructor.
      */
     public FitnessClass() {
     }
 
+    /**
+     * Constructor with parameters. Gives value to the instance variable of FitnessClass object .
+     *
+     * @param fitnessClassName The name of the fitnessClass.
+     * @param instructorName   The name of the instructor of that fitness class
+     * @param classTime        The time that the fitnessclass open
+     * @param location         The location of that fitness class.
+     */
     public FitnessClass(String fitnessClassName, String instructorName, Time classTime, Location location) {
         this.fitnessClassName = fitnessClassName;
         this.instructorName = instructorName;
         this.classTime = classTime;
         this.location = location;
-    }
-
-    /**
-     * Get the student database for this fitness class.
-     *
-     * @return The student database of this fitness class.
-     */
-    public MemberDatabase getStudentsList() {
-        return studentsList;
     }
 
     /**
@@ -67,15 +65,6 @@ public class FitnessClass {
     }
 
     /**
-     * Set the time when this fitness class begins.
-     *
-     * @param classTime The time when this fitness class begins.
-     */
-    public void setTime(Time classTime) {
-        this.classTime = classTime;
-    }
-
-    /**
      * Print the detail of the fitness class.
      * Notice that it would print the fitness class name, instructor name, time that class begins and all the members in
      * this fitness class(if exists).
@@ -103,11 +92,19 @@ public class FitnessClass {
         }
     }
 
+    /**
+     * Display the whole info of this Fitness Class and its schedule.
+     */
     public void printInfo() {
         System.out.println(this.toString());
         printSchedule();
     }
 
+    /**
+     * Get the location of this fitnessClass.
+     *
+     * @return Location object of this fitnessClass.
+     */
     public Location getLocation() {
         return location;
     }
@@ -132,38 +129,54 @@ public class FitnessClass {
         return member.getExpire().compareTo(new Date()) < 0;
     }
 
+    /**
+     * Check in a member to this class's student list.
+     *
+     * @param member The Member object you want to check in.
+     * @return true if add successfully, otherwise false.
+     */
     public boolean addMember(Member member) {
         return studentsList.add(member);
     }
 
+    /**
+     * Check in a guest to this class's guest list.
+     *
+     * @param member The Member object that will have a guest
+     * @return true if add successfully, otherwise false.
+     */
     public boolean addGuest(Member member) {
         return guestList.add(member);
     }
 
     /**
-     * Make a member drop from this fitness class.
+     * Drop a member from this fitness class's student list.
      *
-     * @param member A specific Member object that need to drop from this class.
+     * @param member The member you want to drop.
+     * @return True if successfully dropped, otherwise false.
      */
     public boolean drop(Member member) {
         boolean flag = false;
         if (member.getDob().isValidDob()) {
             if (studentsList.contains(member) >= 0) {
                 flag = studentsList.remove(member);
-                System.out.println(member.getFname() + " " + member.getLname() + " done with the class "
-                        + fitnessClassName + ".");
+                System.out.println(member.getFname() + " " + member.getLname() + " done with the class.");
             } else {
-                System.out.println(member.getFname() + " " + member.getLname() + " did not check in "
-                        + fitnessClassName + ".");
+                System.out.println(member.getFname() + " " + member.getLname() + " did not check in.");
             }
         }
         return flag;
     }
 
+    /**
+     * Drop a Member object's guest from this fitness class's guestList
+     *
+     * @param member The member that bring this guest.
+     * @return True if successfully dropped, false otherwise.
+     */
     public boolean dropGuest(Member member) {
         boolean flag = guestList.remove(member);
-        System.out.println(member.getFname() + " " + member.getLname() + " Guest done with the class " + fitnessClassName
-                + ".");
+        System.out.println(member.getFname() + " " + member.getLname() + " Guest done with the class.");
         if (member instanceof Family) {
             ((Family) member).setNumOfGuestPass(1);
         }
@@ -171,25 +184,23 @@ public class FitnessClass {
     }
 
     /**
-     * Make the first character of a string be Capitalized
+     * This method is used when stringed version of fitnessClass object
      *
-     * @param className Input String that need to be changed
+     * @return a String that print the information of fitnessClass object
      */
-    private String capitalizeString(String className) {
-        char[] stringToChar = className.toCharArray();
-        if (stringToChar[0] >= 'A' && stringToChar[0] <= 'Z') {
-            return className;
-        }
-        stringToChar[0] -= 32;
-        return String.valueOf(stringToChar);
-    }
-
     @Override
     public String toString() {
         return fitnessClassName.toUpperCase() + " - " + instructorName.toUpperCase() + ", " + classTime.getDateTime() +
                 ", " + location;
     }
 
+    /**
+     * This equal method checks whether two FitnessClass object are the same
+     * To be the same, they should have the same Location, same Instructor, same className.
+     *
+     * @param obj An input Object
+     * @return True if they are the same, false otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof FitnessClass fitnessClass) {

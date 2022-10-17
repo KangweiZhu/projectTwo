@@ -2,7 +2,7 @@ package projecttwo;
 
 /**
  * This enum is for the creation and retrieving of a Location enum constant.
- * Each location has a zipcode and also a county that can be retrieved, and also compared
+ * Each location has a zipcode and also a county that can be retrieved and can be compared.
  *
  * @author Kangwei Zhu, Michael Israel
  */

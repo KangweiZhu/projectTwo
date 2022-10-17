@@ -12,11 +12,7 @@ import java.io.File;
  * @author Kangwei Zhu, Michael Israel
  */
 public class GymManager {
-    private final int ISNOTFOUND = -1;
-    private final int INDEX_OF_COMMAND = 0;
-    private final int INDEX_OF_FIRST_CLASS = 0;
     private final int INDEX_OF_CLASS_NAME = 0;
-    private final int INDEX_OF_SECOND_CLASS = 1;
     private final int MODE_C = 0;
     private final int MODE_D = 1;
     private final int MODE_CG = 2;
@@ -24,7 +20,6 @@ public class GymManager {
     private final int INDEX_OF_INSTRUCTOR = 1;
     private final int INDEX_OF_FIRSTNAME = 1;
     private final int INDEX_OF_LASTNAME = 2;
-    private final int INDEX_OF_THIRD_CLASS = 2;
     private final int INDEX_OF_DAYTIME = 2;
     private final int INDEX_OF_DOB = 3;
     private final int INDEX_OF_LOCATION = 3;
@@ -45,8 +40,7 @@ public class GymManager {
 
     /**
      * The method is used when the gym starts for the day.
-     * Given commands can either add, delete, or print a list of members
-     * Given commands can also add, delete, or print a list of classes for members
+     * It will handle all the command listed in the instruction.
      */
     public void run() {
         System.out.println("Gym Manager running..." + "\n");
@@ -82,8 +76,8 @@ public class GymManager {
                 case "AF" -> A(cmdLine, 1);
                 case "AP" -> A(cmdLine, -1);
                 case "PF" -> PF();
-                case "CG" -> doCAndD(cmdLine,MODE_CG);
-                case "DG" -> doCAndD(cmdLine,MODE_DG);
+                case "CG" -> doCAndD(cmdLine, MODE_CG);
+                case "DG" -> doCAndD(cmdLine, MODE_DG);
                 case "Q" -> flag = false;
                 default -> System.out.println(cmdLine[0] + " is an invalid command!");
             }
@@ -93,9 +87,11 @@ public class GymManager {
     }
 
     /**
-     * The method is used when adding a member to the database.
+     * This method will add a Member Object into the member Database.
      *
-     * @param cmdLine Takes in location, dob, full name, and expire date of an individual
+     * @param cmdLine The information(attributes) of a Member object.
+     * @param addType 0 : Member Object   1: Family Object which extends Member Object  -1: Premium Object with extends
+     *                Family Object
      */
     private void A(String[] cmdLine, int addType) {
         String firstName = cmdLine[INDEX_OF_FIRSTNAME];
@@ -206,6 +202,10 @@ public class GymManager {
         }
     }
 
+    /**
+     * This method handle the command "LS", which is the command that load the fitness class schedule from a text file
+     * to the class schedule in the software system.
+     */
     private void LS() {
         String fileName = "classSchedule.txt";
         String[] lines = readFiles(fileName);
@@ -227,6 +227,10 @@ public class GymManager {
         classSchedule.printClassSchedule();
     }
 
+    /**
+     * This method handles "LM" command, which loads the historical member information from a text file to the member
+     * database.
+     */
     private void LM() {
         String fileName = "memberList.txt";
         String[] lines = readFiles(fileName);
@@ -250,48 +254,70 @@ public class GymManager {
         System.out.println("-end of list-\n");
     }
 
+    /**
+     * This method handles the command "PF", which is print the list of members with the next billing statement
+     * membership fees.
+     */
     private void PF() {
         memberDB.printByMembershipFees();
     }
 
-    private void doDG(FitnessClass fitnessClass, Member guest) {
-        fitnessClass.dropGuest(guest);
-    }
-
-    private void doCG(FitnessClass fitnessClass, Member member){
-        int numOfPass = 0;
-        if (member instanceof Family){
-            numOfPass = ((Family) member).getNumOfGuestPass();
-            if (numOfPass == 0){
-                System.out.println(member.getFname() + " " + member.getLname() + " ran out of guest pass.");
-            }else{
-                    if (member.getLocation().compareLocation(fitnessClass.getLocation()) == 0){
-                        ((Family) member).setNumOfGuestPass(-1);
-                        fitnessClass.addGuest(member);
-                        System.out.println(member.getFname() + " " + member.getLname() + " (guest) checked in " +
-                                fitnessClass.toString());
-                        fitnessClass.printSchedule();
-                        System.out.println();
-                    }else{
-                        Location location = fitnessClass.getLocation();
-                        String zipCode = location.getZipCode();
-                        String county = location.getCounty();
-                        System.out.println(member.getFname() + " " + member.getLname() + " Guest checking in " +
-                                location + ": " + zipCode + ", " + county + " - guest location restriction.");
-                    }
-                }
-            }else{
-            System.out.println("Standard membership - guest check-in is not allowed.");
-        }
+    /**
+     * This method is used when dropping a member's guest to a specific class
+     *
+     * @param fitnessClass The specific fitness class that the guest is going to be dropped.
+     * @param guest        The guest
+     * @return True if successfully dropped, false otherwise.
+     */
+    private boolean doDG(FitnessClass fitnessClass, Member guest) {
+        return fitnessClass.dropGuest(guest);
     }
 
     /**
-     * The method is used for members to check in to a fitness class.
-     * Not allowed to be added if -->  the membership has expired, the member does not exist,
-     * the date of birth is invalid, the fitness class does not exist,
-     * there is a time conflict with other fitness classes, or the member has already checked in
+     * This method is used when checking in a member's guest to a specific fitness class.
      *
-     * @param cmdLine Takes in class name, dob, and full name of a member
+     * @param fitnessClass The specific fitness class that the guest is going to be checked into.
+     * @param member       The member which bring his guest.
+     * @return True if successfully added, otherwise false.
+     */
+    private boolean doCG(FitnessClass fitnessClass, Member member) {
+        int numOfPass = 0;
+        boolean flag = false;
+        if (member instanceof Family) {
+            numOfPass = ((Family) member).getNumOfGuestPass();
+            if (numOfPass == 0) {
+                System.out.println(member.getFname() + " " + member.getLname() + " ran out of guest pass.");
+            } else {
+                if (member.getLocation().compareLocation(fitnessClass.getLocation()) == 0) {
+                    ((Family) member).setNumOfGuestPass(-1);
+                    flag = fitnessClass.addGuest(member);
+                    System.out.println(member.getFname() + " " + member.getLname() + " (guest) checked in " +
+                            fitnessClass.toString());
+                    fitnessClass.printSchedule();
+                    System.out.println();
+                } else {
+                    Location location = fitnessClass.getLocation();
+                    String zipCode = location.getZipCode();
+                    String county = location.getCounty().toUpperCase();
+                    System.out.println(member.getFname() + " " + member.getLname() + " Guest checking in " +
+                            location + ", " + zipCode + ", " + county + " - guest location restriction.");
+                }
+            }
+        } else {
+            System.out.println("Standard membership - guest check-in is not allowed.");
+        }
+        return flag;
+    }
+
+    /**
+     * This method is used for sperating the string typed array command lines. Do the checks before checkin a member/guest
+     * / drop a member/guest and then dispatch it to the methods that do the check in/drop member/guest.
+     *
+     * @param cmdLine The cmdLine array which has the attribute of the member.
+     * @param mode    0 : check in a member into a fitness Class.
+     *                1 : drop a member from a fitness Class.
+     *                2 : check in a guest into a fitness Class.
+     *                3 : drop a guest from fitness Class.
      */
     private void doCAndD(String[] cmdLine, int mode) {
         String fName = cmdLine[INDEX_OF_CHECKIN_FNAME];
@@ -324,16 +350,22 @@ public class GymManager {
             }
             if (mode == MODE_C) {
                 doCheckIn(fitnessClass, newMember);
-            } else if(mode == MODE_D){
+            } else if (mode == MODE_D) {
                 fitnessClass.drop(newMember);
-            } else if(mode == MODE_DG){
-                doDG(fitnessClass,newMember);
-            } else if(mode == MODE_CG){
-                doCG(fitnessClass,newMember);
+            } else if (mode == MODE_DG) {
+                doDG(fitnessClass, newMember);
+            } else if (mode == MODE_CG) {
+                doCG(fitnessClass, newMember);
             }
         }
     }
 
+    /**
+     * check whether a member is already in database or not
+     *
+     * @param member The member that are going to be checked.
+     * @return True if not exist, otherwise false.
+     */
     private boolean checkDB(Member member) {
         if (memberDB.contains(member) < 0) {
             if (member.getDob().isValidDob() && member.getExpire().isValidExpiration()) {
@@ -345,11 +377,20 @@ public class GymManager {
         return false;
     }
 
+    /**
+     * Check if there is time conflict when a member want to check in a fitnessClass.
+     * That is, if the member has already registered a fitness class that the time of the fitnessClass he wants to check
+     * in. That is considered as time conflict.
+     *
+     * @param fitnessClass The fitness class that the mmember wants to check in.
+     * @param member       The member that are going to check in a class
+     * @return True if there is time conflict, false otherwise.
+     */
     private boolean isTimeConflict(FitnessClass fitnessClass, Member member) {
         String classTime = fitnessClass.getTime().getDateTime();
         for (int i = 0; i < classSchedule.getNumClasses(); i++) {
-            if (classSchedule.getFitnessClasses()[i].isRegistered(member)){
-                if (classTime.equals(classSchedule.getFitnessClasses()[i].getTime().getDateTime())){
+            if (classSchedule.getFitnessClasses()[i].isRegistered(member)) {
+                if (classTime.equals(classSchedule.getFitnessClasses()[i].getTime().getDateTime())) {
                     return true;
                 }
             }
@@ -357,9 +398,21 @@ public class GymManager {
         return false;
     }
 
-    private void doCheckIn(FitnessClass fitnessClass, Member member) {
+    /**
+     * This method is used when check in a member into a fitnessClass. It also does the checking before add the member into
+     * the fitnessClass's student list.
+     *
+     * @param fitnessClass The fitness class this member wants to check in
+     * @param member       The member that are going to be checked in
+     * @return True if successfully checked in, false otherwise.
+     */
+    private boolean doCheckIn(FitnessClass fitnessClass, Member member) {
         String fName = member.getFname();
         String lName = member.getLname();
+        Location location = fitnessClass.getLocation();
+        String zipCode = location.getZipCode();
+        String county = location.getCounty().toUpperCase();
+        boolean flag = false;
         if (!fitnessClass.isRegistered(member)) {
             if (!fitnessClass.isExpired(member)) {
                 if (!isTimeConflict(fitnessClass, member)) {
@@ -370,20 +423,18 @@ public class GymManager {
                         System.out.println();
                     } else {
                         if (fitnessClass.getLocation().compareLocation(member.getLocation()) == 0) {
-                            fitnessClass.addMember(member);
+                            flag = fitnessClass.addMember(member);
                             System.out.println(fName + " " + lName + " checked in " + fitnessClass.toString());
                             fitnessClass.printSchedule();
                             System.out.println();
                         } else {
-                            Location location = fitnessClass.getLocation();
-                            String zipCode = location.getZipCode();
-                            String county = location.getCounty();
-                            System.out.println(fName + " " + lName + " checking in " + location + ": " + zipCode + ", "
+                            System.out.println(fName + " " + lName + " checking in " + location + ", " + zipCode + ", "
                                     + county + " - standard membership location restriction.");
                         }
                     }
                 } else {
-                    System.out.println("Time conflict - " + fitnessClass.toString());
+                    System.out.println("Time conflict - " + fitnessClass.toString() + ", " + zipCode + ", "
+                    + county);
                 }
             } else {
                 System.out.println(fName + " " + lName + " " + member.getDob() + " membership expired.");
@@ -391,6 +442,7 @@ public class GymManager {
         } else {
             System.out.println(fName + " " + lName + " already checked in.");
         }
+        return flag;
     }
 
     /**
@@ -409,6 +461,45 @@ public class GymManager {
         return false;
     }
 
+    /**
+     * This method is used only for the junit test: check in before add member.
+     *
+     * @param fitnessClass The fitness class that the member is gonna checked in
+     * @param member       The member object that will check into one fitness class
+     * @return True if successfully checked in, otherwise false.
+     */
+    public boolean testCheckIn(FitnessClass fitnessClass, Member member) {
+        return doCheckIn(fitnessClass, member);
+    }
+
+    /**
+     * This method is used only for the junit test: check in before add guest.
+     *
+     * @param fitnessClass The fitness class that the member's guest is gonna checked in
+     * @param member       The member's guest that will check into one fitness class
+     * @return True if successfully checked in, otherwise false.
+     */
+    public boolean testGuestCheckIn(FitnessClass fitnessClass, Member member) {
+        return doCG(fitnessClass, member);
+    }
+
+    /**
+     * This method is used only for the junit test: add member.
+     *
+     * @param fitnessClasses The sample class schedule. Which is the array that holds all the fitness classes in this
+     *                       fitness chain.
+     * @param numOfClass     The number of fitness Class this fitness chain has.
+     */
+    public void addSampleClassSchedule(FitnessClass[] fitnessClasses, int numOfClass) {
+        this.classSchedule = new ClassSchedule(fitnessClasses, fitnessClasses.length);
+    }
+
+    /**
+     * This method is used when reading lines from text file.
+     *
+     * @param fileName The name of file
+     * @return The String array that contains all the lines. Each element in this array is the one line in the text file.
+     */
     private String[] readFiles(String fileName) {
         File inputFile = new File(fileName);
         try {
